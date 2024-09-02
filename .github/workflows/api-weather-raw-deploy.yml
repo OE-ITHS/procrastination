@@ -1,0 +1,63 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - "main"
+      - "weatherapi-deploytesting"
+  pull_request:
+    branches:
+      - "main"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Decode and log in to Google Artifact Registry
+      run: |
+        echo ${{ secrets.GCP_SA_KEY_ENCRYPTED }} | base64 --decode | gcloud auth activate-service-account --key-file=-
+    
+    - name: Configure Docker to use Google Artifact Registry
+      run: |
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+        
+    - name: Build Docker image
+      run: |
+        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/api-weather-raw-image:latest ./pipes/api-weather-raw/
+    
+    - name: Push Docker image
+      run: |
+        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/api-weather-raw-image:latest
+
+    - name: Deploy to Google Cloud Run
+      run: |
+        gcloud run deploy weather-api-call-run-container \
+          --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/api-weather-raw-image:latest \
+          --region us-central1 \
+          --platform managed \
+          --allow-unauthenticated \
+          --verbosity=debug
+
+    - name: Set Cloud Run IAM Policy
+      run: |
+        gcloud run services add-iam-policy-binding weather-api-call-run-container \
+          --member='allUsers' \
+          --role='roles/run.invoker' \
+          --region=us-central1

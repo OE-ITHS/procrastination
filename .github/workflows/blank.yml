@@ -1,5 +1,8 @@
 # This is a basic workflow to help you get started with Actions
 
+# We're not going to use this blank.yml file, but I thought it could be good to have a simplistic yet functional (sort of) .yml .github/workflow file 
+#                                                                                  in case we feel "lost" or unsure when creating workflow .yml files.
+
 name: CI
 
 # Controls when the workflow will run
