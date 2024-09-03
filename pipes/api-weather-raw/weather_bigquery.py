@@ -1,9 +1,11 @@
 from google.cloud import bigquery
-import io, json
+import json
+from datetime import datetime, timezone, timedelta
+import pandas as pd
 
 def load_data_to_bigquery(weather_data: dict) -> bool:
     '''
-    Loads data to a bigquery table with an automatically determined schema based on the data.
+    Loads data to a bigquery table with a "schemaless" table, e.i. stored as one value.
 
     :param weather_data: 
         weather_data is expected to be dictonary generated from response.json() in the api_weather.fetch_current_data() function.
@@ -15,30 +17,41 @@ def load_data_to_bigquery(weather_data: dict) -> bool:
 
     # Initialize BigQuery client.
     bigquery_client = bigquery.Client()
-    table_id = 'acquired-sound-433108-c6.weather_raw.json_table'
+    table_id = 'acquired-sound-433108-c6.weather_raw.weather_raw'
 
-    # Normalize the 'weather' field.
-    if 'weather' in weather_data and isinstance(weather_data['weather'], list):
-        weather_data['weather'] = weather_data['weather'][0]
+    # Transforms weather_data from json to json string for "schemaless" storage.
+    # (Entire json stored as one single column and row value)
+    weather_data_string = json.dumps(weather_data)
 
-    # Prepare data for BigQuery.
-    weather_data_binary = io.StringIO(json.dumps(weather_data))
+    # Define schema layout of BigQuery table.
+    schema = [
+        bigquery.SchemaField("json_raw", "STRING"),
+        bigquery.SchemaField("ingestion_date_UTC", "TIMESTAMP")
+    ]
+
+    # Creates more descriptive datetime for UTC+1.
+    sweTZobject = timezone(timedelta(hours=1), name='SWE')
+
+    # Create pandas dataframe with json_data and datetime of ingestion.
+    df = pd.DataFrame({
+        'json_raw':[weather_data_string], 
+        'ingestion_date_UTC':datetime.today().astimezone(sweTZobject)
+    })
 
     # BigQuery job configuration.
     job_config = bigquery.LoadJobConfig(
-        source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-        schema_update_options=['ALLOW_FIELD_ADDITION', 'ALLOW_FIELD_RELAXATION'],
-        autodetect=True
+        schema=schema,
+        write_disposition="WRITE_TRUNCATE"
     )
 
     try:
-        # Load binary data into BigQuery.
-        job = bigquery_client.load_table_from_file(
-            weather_data_binary,
+        # Load data into BigQuery table.
+        job = bigquery_client.load_table_from_dataframe(
+            df,
             table_id,
             job_config=job_config
         )
-        # Check if load_table_from_file succeeded or failed. If failed, also provides error message.
+        # Check if job succeeded or failed. If failed, also provides error message.
         job.result()
         return True
     except Exception as e:
