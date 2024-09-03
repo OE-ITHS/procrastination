@@ -41,7 +41,7 @@ def load_data_to_bigquery(weather_data: dict) -> bool:
     # BigQuery job configuration.
     job_config = bigquery.LoadJobConfig(
         schema=schema,
-        write_disposition="WRITE_TRUNCATE"
+        write_disposition="WRITE_APPEND"
     )
 
     try:
