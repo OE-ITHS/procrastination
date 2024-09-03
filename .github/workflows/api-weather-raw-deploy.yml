@@ -31,7 +31,7 @@ jobs:
 
     - name: Decode and log in to Google Artifact Registry
       run: |
-        echo ${{ secrets.GCP_SA_KEY }} | gcloud auth activate-service-account --key-file=-
+        echo ${{ secrets.GCP_SA_KEY_ENCRYPTED }} | base64 --decode | gcloud auth activate-service-account --key-file=-
     
     - name: Configure Docker to use Google Artifact Registry
       run: |
