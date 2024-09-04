@@ -1,12 +1,18 @@
-name: Deploy to Cloud Run
+name: Deploy api-weather-raw to Cloud Run
 
 on:
   push:
     branches:
-      - "main"
+      - 'main'
+    paths:
+      - '.github/workflows/api-weather-raw-deploy.yml'
+      - 'pipes/api-weather-raw/**'
   pull_request:
     branches:
-      - "main"
+      - 'main'
+    paths:
+      - '.github/workflows/api-weather-raw-deploy.yml'
+      - 'pipes/api-weather-raw/**'
   workflow_dispatch:
 
 jobs:
