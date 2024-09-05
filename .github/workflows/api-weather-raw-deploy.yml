@@ -50,12 +50,6 @@ jobs:
       # Sets up Docker Buildx which is a tool necessary for building Docker images
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
-
-      # Authenticates to Google Artifact Registry, a service that stores container images
-      # Also decodes the encrypted version of the GCP_SA_KEY. I still don't know why encryption is needed, but using a non-encrypted key breaks the deploy
-    # - name: Decode and log in to Google Artifact Registry
-    #   run: |
-    #     echo $ {{ secrets.GCP_SA_KEY_ENCRYPTED }} | base64 --decode | gcloud auth activate-service-account --key-file=-
     
       # Configures Docker to send its images to the Artifact Registry
     - name: Configure Docker to use Google Artifact Registry
@@ -81,11 +75,3 @@ jobs:
           --platform managed \
           --allow-unauthenticated 
       #   --verbosity=debug  # Enable if you need extra info to fix issues
-
-      # Configures IAM policy to allow allUsers (public) to invoke the service by 
-    - name: Set Cloud Run IAM Policy
-      run: |
-        gcloud run services add-iam-policy-binding weather-api-call-run-container \
-          --member='allUsers' \
-          --role='roles/run.invoker' \
-          --region=us-central1
