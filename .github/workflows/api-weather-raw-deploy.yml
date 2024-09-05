@@ -53,9 +53,9 @@ jobs:
 
       # Authenticates to Google Artifact Registry, a service that stores container images
       # Also decodes the encrypted version of the GCP_SA_KEY. I still don't know why encryption is needed, but using a non-encrypted key breaks the deploy
-    - name: Decode and log in to Google Artifact Registry
-      run: |
-        echo ${{ secrets.GCP_SA_KEY_ENCRYPTED }} | base64 --decode | gcloud auth activate-service-account --key-file=-
+    # - name: Decode and log in to Google Artifact Registry
+    #   run: |
+    #     echo $ {{ secrets.GCP_SA_KEY_ENCRYPTED }} | base64 --decode | gcloud auth activate-service-account --key-file=-
     
       # Configures Docker to send its images to the Artifact Registry
     - name: Configure Docker to use Google Artifact Registry
