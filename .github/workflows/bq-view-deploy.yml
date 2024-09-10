@@ -75,7 +75,7 @@ jobs:
       run: |
         bq query \
           --use_legacy_sql=false \
-          --destination_table="acquired-sound-433108-c6.weather_raw.weather_clean_view" \
+          --destination_table="acquired-sound-433108-c6:weather_raw.weather_clean_view" \
           --replace \
           < ./pipes/raw-weather-transformed/weather-clean-view.sql
 
@@ -85,6 +85,6 @@ jobs:
       run: |
         bq query \
           --use_legacy_sql=false \
-          --destination_table="acquired-sound-433108-c6.weather_raw.weather_transformed_view" \
+          --destination_table="acquired-sound-433108-c6:weather_raw.weather_transformed_view" \
           --replace \
           < ./pipes/raw-weather-transformed/weather-transformed-view.sql
