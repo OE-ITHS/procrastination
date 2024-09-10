@@ -1,0 +1,83 @@
+# Name that appears in github actions page
+name: Deploy clean/transform-view(s) to BigQuery
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events
+  push:
+    # Only trigger workflow if the push or pull request was on branch 'main'
+    branches:
+      - 'main'
+    # Only trigger workflow if the push or pull request contains commits with changes to anything in these directories/files
+    paths:
+      - '.github/workflows/bq-view-deploy.yml'
+      - 'pipes/raw-weather-transformed/**'
+  pull_request:
+    branches:
+      - 'main'
+    paths:
+      - '.github/workflows/bq-view-deploy.yml'
+      - 'pipes/raw-weather-transformed/**'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel | In this case we only have 1 job
+jobs:
+  # This workflow contains a single job called "deploy"
+  deploy-view:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Defines permissions the .yml will have
+    permissions:
+      # Permission to read contents of repository | In this case it's used to read the github secrets such as GCP_PROJECT_ID or GCP_SA_KEY
+      contents: read
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Clones repository code to github runner, so workflow can access the files
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+      # Authenticates to Google Cloud to recieve necessary permissions
+    - name: Authenticate with Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      # Checks if any changes has occured to the weather-clean-view.sql and sets the .outcome property of the weather-clean-view_changed id correspondingly
+    - name: Check if weather-clean-view.sql was changed
+      id: weather-clean-view_changed
+      run: | 
+        git diff --name-only ${{ github.sha }}~1 ${{ github.sha }} | grep './pipes/raw-weather-transformed/weather-clean-view.sql' || echo "no-change"
+      #                      ^^previous commit^^ ^current commit^^
+      continue-on-error: true
+
+      # Checks if any changes has occured to the weather-transformed-view.sql and sets the .outcome property of the weather-transformed-view_changed id correspondingly
+    - name: Check if weather-transformed-view.sql was changed
+      id: weather-transformed-view_changed
+      run: |
+        git diff --name-only ${{ github.sha }}~1 ${{ github.sha }} | grep './pipes/raw-weather-transformed/weather-transformed-view.sql' || echo "no-change"
+      #                      ^^previous commit^^ ^current commit^^
+      continue-on-error: true
+
+      # Checks if the .outcome property of the weather-clean-view_changed id is 'success'. If it is, continue with the deployment; if not, skip
+    - name: Deploy weather-clean-view.sql to BigQuery
+      if: steps.weather-clean-view_changed.outcome == 'success'
+      run: |
+        gcloud bigquery query \
+          --use_legacy_sql=false \
+          --destination_table="acquired-sound-433108-c6:weather_raw:weather_clean_view" \
+          --replace \
+          --file=./pipes/raw-weather-transformed/weather-clean-view.sql
+
+      # Checks if the .outcome property of the weather-transformed-view_changed id is 'success'. If it is, continue with the deployment; if not, skip
+    - name: Deploy weather-transformed-view.sql to BigQuery
+      if: steps.weather-transformed-view_changed.outcome == 'success'
+      run: |
+        gcloud bigquery query \
+          --use_legacy_sql=false \
+          --destination_table="acquired-sound-433108-c6:weather_raw:weather_transformed_view" \
+          --replace \
+          --file=./pipes/raw-weather-transformed/weather-transformed-view.sql
