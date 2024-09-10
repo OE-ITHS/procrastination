@@ -17,7 +17,7 @@ def load_data_to_bigquery(weather_data: dict) -> bool:
 
     # Initialize BigQuery client.
     bigquery_client = bigquery.Client()
-    table_id = 'acquired-sound-433108-c6.weather_raw.weather_raw'
+    table_id = 'acquired-sound-433108-c6.weather_data.weather_raw'
 
     # Transforms weather_data from json to json string for "schemaless" storage.
     # (Entire json stored as one single column and row value)

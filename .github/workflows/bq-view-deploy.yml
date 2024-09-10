@@ -71,20 +71,20 @@ jobs:
 
       # Checks if the .outcome property of the weather-clean-view_changed id is 'success'. If it is, continue with the deployment; if not, skip
     - name: Deploy weather-clean-view.sql to BigQuery
-      if: steps.weather-clean-view_changed.outcome == 'success'
+      if: steps.weather-clean-view_changed.outcome == 'success' && steps.weather-clean-view_changed.outputs.result != 'no-change'
       run: |
         bq query \
           --use_legacy_sql=false \
-          --destination_table="acquired-sound-433108-c6:weather_raw.weather_raw" \
+          --destination_table="acquired-sound-433108-c6:weather_data.weather_raw" \
           --replace \
           < ./pipes/raw-weather-transformed/weather-clean-view.sql
 
       # Checks if the .outcome property of the weather-transformed-view_changed id is 'success'. If it is, continue with the deployment; if not, skip
     - name: Deploy weather-transformed-view.sql to BigQuery
-      if: steps.weather-transformed-view_changed.outcome == 'success'
+      if: steps.weather-transformed-view_changed.outcome == 'success' && steps.weather-transformed-view_changed.outputs.result != 'no-change'
       run: |
         bq query \
           --use_legacy_sql=false \
-          --destination_table="acquired-sound-433108-c6:weather_raw.weather_raw" \
+          --destination_table="acquired-sound-433108-c6:weather_data.weather_raw" \
           --replace \
           < ./pipes/raw-weather-transformed/weather-transformed-view.sql
