@@ -73,5 +73,5 @@ jobs:
           --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/api-weather-raw-image:latest \
           --region us-central1 \
           --platform managed \
-          --allow-unauthenticated 
+          --allow-unauthenticated
       #   --verbosity=debug  # Enable if you need extra info to fix issues

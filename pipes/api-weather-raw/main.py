@@ -11,7 +11,7 @@ def api_weather_bq():
     
     # Provide descriptive error messages.
     if weather_data is None:
-        return           jsonify({'error': 'Failed to fetch weather data'}), 500
+        return jsonify({'error': 'Failed to fetch weather data'}), 500
     if not load_data_to_bigquery(weather_data):
         return jsonify({'error': 'Failed to load data to BigQuery'}), 500
     return jsonify({'message': 'Data stored successfully!'})
