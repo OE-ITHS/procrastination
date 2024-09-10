@@ -75,8 +75,8 @@ jobs:
       run: |
         bq query \
           --use_legacy_sql=false \
-          --destination_table="acquired-sound-433108-c6:weather_data.weather_clean" \
-          --replace \
+          --format=none \
+          --quiet \
           < ./pipes/raw-weather-transformed/weather-clean-view.sql
 
       # Checks if the .outcome property of the weather-transformed-view_changed id is 'success'. If it is, continue with the deployment; if not, skip
@@ -85,6 +85,6 @@ jobs:
       run: |
         bq query \
           --use_legacy_sql=false \
-          --destination_table="acquired-sound-433108-c6:weather_data.weather_transformed" \
-          --replace \
+          --format=none \
+          --quiet \
           < ./pipes/raw-weather-transformed/weather-transformed-view.sql
