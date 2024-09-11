@@ -47,4 +47,4 @@ SELECT
   CAST(JSON_EXTRACT_SCALAR(json_raw, '$.cod') AS INT64) AS cod_status
   
 FROM `acquired-sound-433108-c6.weather_data.weather_raw`
-LIMIT 10; 
+LIMIT 10;
