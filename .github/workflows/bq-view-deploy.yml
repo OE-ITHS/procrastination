@@ -40,6 +40,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+      # Authenticates to Google Cloud to recieve necessary permissions
+    - name: Authenticate with Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
       # Installs the Google Cloud CLI (Which contains the BigQuery CLI) to be able to execute bigquery commands since bigquery has its own CLI
     - name: Install Google Cloud CLI and BigQuery CLI
       run: |
@@ -48,13 +55,6 @@ jobs:
       # Simply sets up the bigquery cli to be usable
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
-
-      # Authenticates to Google Cloud to recieve necessary permissions
-    - name: Authenticate with Google Cloud
-      uses: google-github-actions/auth@v2
-      with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       # Checks if any changes has occured to the weather-clean-view.sql and sets the .outcome property of the weather-clean-view_changed id correspondingly
     - name: Check if weather-clean-view.sql was changed
