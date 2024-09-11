@@ -11,13 +11,13 @@ on:
     # Only trigger workflow if the push or pull request contains commits with changes to anything in these directories/files
     paths:
       - '.github/workflows/bq-view-deploy.yml'
-      - 'pipes/raw-weather-transformed/**'
+      - 'pipes/weather-data-processing/**'
   pull_request:
     branches:
       - 'main'
     paths:
       - '.github/workflows/bq-view-deploy.yml'
-      - 'pipes/raw-weather-transformed/**'
+      - 'pipes/weather-data-processing/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -60,7 +60,7 @@ jobs:
     - name: Check if weather-clean-view.sql was changed
       id: weather-clean-view_changed
       run: | 
-        git diff --name-only ${{ github.sha }}~1 ${{ github.sha }} | grep './pipes/raw-weather-transformed/weather-clean-view.sql' || echo "no-change"
+        git diff --name-only ${{ github.sha }}~1 ${{ github.sha }} | grep './pipes/weather-data-processing/weather-clean-view.sql' || echo "no-change"
       #                      ^^previous commit^^ ^current commit^^
       continue-on-error: true
 
@@ -68,7 +68,7 @@ jobs:
     - name: Check if weather-transformed-view.sql was changed
       id: weather-transformed-view_changed
       run: |
-        git diff --name-only ${{ github.sha }}~1 ${{ github.sha }} | grep './pipes/raw-weather-transformed/weather-transformed-view.sql' || echo "no-change"
+        git diff --name-only ${{ github.sha }}~1 ${{ github.sha }} | grep './pipes/weather-data-processing/weather-transformed-view.sql' || echo "no-change"
       #                      ^^previous commit^^ ^current commit^^
       continue-on-error: true
 
@@ -80,7 +80,7 @@ jobs:
           --use_legacy_sql=false \
           --format=none \
           --quiet \
-          < ./pipes/raw-weather-transformed/weather-clean-view.sql
+          < ./pipes/weather-data-processing/weather-clean-view.sql
 
       # Checks if the .outcome property of the weather-transformed-view_changed id is 'success'. If it is, continue with the deployment; if not, skip
     - name: Deploy weather-transformed-view.sql to BigQuery
@@ -90,4 +90,4 @@ jobs:
           --use_legacy_sql=false \
           --format=none \
           --quiet \
-          < ./pipes/raw-weather-transformed/weather-transformed-view.sql
+          < ./pipes/weather-data-processing/weather-transformed-view.sql
