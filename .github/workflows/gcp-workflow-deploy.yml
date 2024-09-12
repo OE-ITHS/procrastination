@@ -33,7 +33,13 @@ jobs:
       run: |
         gcloud workflows deploy procrastination-workflow \
           --source=pipelines/gcp-workflow.yml \
-          --location=us-central1
+          --location=us-central1 \
+          --source=./pipelines/gcp-workflow.yml \
+          --entry-point=main
+
+        gcloud workflows update procrastination-workflow \
+          --location=us-central1 \
+          --metadata="httpRequestUri=${{ secrets.CLOUD_RUN_URL }}"
 
     - name: Wait for Workflow Deployment
       run: sleep 30
