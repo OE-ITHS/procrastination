@@ -34,8 +34,7 @@ jobs:
         gcloud workflows deploy procrastination-workflow \
           --source=pipelines/gcp-workflow.yml \
           --location=us-central1 \
-          --source=./pipelines/gcp-workflow.yml \
-          --entry-point=main
+          --source=./pipelines/gcp-workflow.yml
 
         gcloud workflows update procrastination-workflow \
           --location=us-central1 \
