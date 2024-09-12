@@ -43,10 +43,10 @@ jobs:
         gcloud scheduler jobs create pubsub trigger-cloud-run-workflow \
           --schedule="0 * * * *" \
           --topic=workflow-trigger-topic \
-          --message-body="Triggered Cloud Run Workflow" \
+          --message-body='{"service_url":"${{ secrets.CLOUD_RUN_URL }}"}' \
           --time-zone="America/New_York" || \
         gcloud scheduler jobs update pubsub trigger-cloud-run-workflow \
           --schedule="0 * * * *" \
           --topic=workflow-trigger-topic \
-          --message-body="Triggered Cloud Run Workflow" \
+          --message-body='{"service_url":"${{ secrets.CLOUD_RUN_URL }}"}' \
           --time-zone="America/New_York"
