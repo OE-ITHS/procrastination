@@ -4,14 +4,12 @@ on:
   push:
     branches:
       - 'main'
-      - 'gcp-workflow-deploy-testing'
     paths:
       - '.github/workflows/gcp-workflow-deploy.yml'
       - 'pipelines/**'
   pull_request:
     branches:
         - 'main'
-        - 'gcp-workflow-deploy-testing'
     paths:
         - '.github/workflows/gcp-workflow-deploy.yml'
         - 'pipelines/**'
