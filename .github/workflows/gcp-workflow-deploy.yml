@@ -45,8 +45,8 @@ jobs:
           --http-method=POST \
           --location=us-central1 \
           --uri="https://workflowexecutions.googleapis.com/v1/projects/${{ secrets.GCP_PROJECT_ID }}/workflows/procrastination-workflow:run" \
+          --headers Content-Type=application/json \
           --message-body='{"service_url":"${{ secrets.CLOUD_RUN_URL }}"}' \
-          --headers="Content-Type:application/json" \
           --time-zone="UTC"
         else
           echo "Job 'trigger-run-workflow' exists. Updating..."
@@ -55,7 +55,7 @@ jobs:
           --http-method=POST \
           --location=us-central1 \
           --uri="https://workflowexecutions.googleapis.com/v1/projects/${{ secrets.GCP_PROJECT_ID }}/workflows/procrastination-workflow:run" \
+          --headers Content-Type=application/json \
           --message-body='{"service_url":"${{ secrets.CLOUD_RUN_URL }}"}' \
-          --headers="Content-Type:application/json" \
           --time-zone="UTC"
         fi
