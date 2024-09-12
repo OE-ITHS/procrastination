@@ -1,0 +1,16 @@
+# workflow.yml
+
+main:
+  params: [https://weather-api-call-run-container-23751604121.us-central1.run.app/weather]
+
+  steps:
+  # Step 1: Make a simple HTTP request to the Cloud Run service
+  - invokeCloudRunService:
+      call: http.get
+      args:
+        url: ${service_url}
+      result: service_response
+
+  # Step 2: Return the response from the Cloud Run service
+  - returnResponse:
+      return: ${service_response}
