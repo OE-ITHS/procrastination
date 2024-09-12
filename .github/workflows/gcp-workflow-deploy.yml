@@ -3,7 +3,18 @@ name: Deploy Google Cloud Workflow
 on:
   push:
     branches:
-      - main  # Trigger the action when pushing to the main branch
+      - 'main'
+      - 'gcp-workflow-deploy-testing'
+    paths:
+      - '.github/workflows/gcp-workflow-deploy.yml'
+      - 'pipelines/**'
+  pull_request:
+    branches:
+        - 'main'
+        - 'gcp-workflow-deploy-testing'
+    paths:
+        - '.github/workflows/gcp-workflow-deploy.yml'
+        - 'pipelines/**'
 
 jobs:
   deploy:
@@ -11,7 +22,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
@@ -22,6 +33,20 @@ jobs:
       run: |
         gcloud workflows deploy procrastination-workflow --source=pipelines/gcp-workflow.yml --location=us-central1
 
-    - name: Execute Workflow
+    - name: Set up Cloud Scheduler job
       run: |
-        gcloud workflows run my-cloud-run-workflow --location=us-central1 --data='{"service_url": "${{ secrets.CLOUD_RUN_URL }}"}'
+        gcloud pubsub topics create workflow-trigger-topic || echo "Topic already exists"
+        gcloud workflows create procrastination-workflow \
+          --source=pipelines/gcp-workflow.yml \
+          --location=us-central1 \
+          --trigger-topic=projects/${{ secrets.GCP_PROJECT_ID }}/topics/workflow-trigger-topic
+        gcloud scheduler jobs create pubsub trigger-cloud-run-workflow \
+          --schedule="0 * * * *" \
+          --topic=workflow-trigger-topic \
+          --message-body="Triggered Cloud Run Workflow" \
+          --time-zone="America/New_York" || \
+        gcloud scheduler jobs update pubsub trigger-cloud-run-workflow \
+          --schedule="0 * * * *" \
+          --topic=workflow-trigger-topic \
+          --message-body="Triggered Cloud Run Workflow" \
+          --time-zone="America/New_York"
