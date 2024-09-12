@@ -40,12 +40,7 @@ jobs:
           --source=pipelines/gcp-workflow.yml \
           --location=us-central1 \
           --trigger-topic=projects/${{ secrets.GCP_PROJECT_ID }}/topics/workflow-trigger-topic
-        gcloud scheduler jobs create pubsub trigger-cloud-run-workflow \
-          --schedule="0 * * * *" \
-          --topic=workflow-trigger-topic \
-          --message-body='{"service_url":"${{ secrets.CLOUD_RUN_URL }}"}' \
-          --time-zone="America/New_York" || \
-        gcloud scheduler jobs update pubsub trigger-cloud-run-workflow \
+        gcloud scheduler jobs deploy pubsub trigger-cloud-run-workflow \
           --schedule="0 * * * *" \
           --topic=workflow-trigger-topic \
           --message-body='{"service_url":"${{ secrets.CLOUD_RUN_URL }}"}' \
