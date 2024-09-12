@@ -13,4 +13,5 @@ main:
 
   # Step 2: Return the response from the Cloud Run service
   - returnResponse:
+      call: sys.log
       return: ${service_response}
