@@ -35,8 +35,13 @@ jobs:
 
     - name: Set up Cloud Scheduler job
       run: |
-        gcloud pubsub topics create workflow-trigger-topic || echo "Topic already exists"
-        gcloud workflows create procrastination-workflow \
+        if ! gcloud pubsub topics describe workflow-trigger-topic > /dev/null 2>&1; then
+          gcloud pubsub topics create workflow-trigger-topic 
+          echo "Topic 'workflow-trigger-topic' created."
+        else
+          echo "Topic 'workflow-trigger-topic' already exists."
+        fi
+        gcloud workflows deploy procrastination-workflow \
           --source=pipelines/gcp-workflow.yml \
           --location=us-central1 \
           --trigger-topic=projects/${{ secrets.GCP_PROJECT_ID }}/topics/workflow-trigger-topic
