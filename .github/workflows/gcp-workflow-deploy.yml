@@ -35,9 +35,12 @@ jobs:
           --source=./pipelines/gcp-workflow.yml \
           --location=us-central1 \
 
+    - name: Delete previous Cloud Scheduler job
+      run: gcloud scheduler jobs delete trigger-cloud-run-workflow --location=us-central1
+
     - name: Create Cloud Scheduler job
       run: |
-        gcloud scheduler jobs update http trigger-cloud-run-workflow \
+        gcloud scheduler jobs create http trigger-cloud-run-workflow \
         --schedule="0 * * * *" \
         --http-method=POST \
         --uri="https://workflowexecutions.googleapis.com/v1/projects/${{secrets.GCP_PROJECT_ID}}/locations/us-central1/workflows/procrastination-workflow/executions" \
