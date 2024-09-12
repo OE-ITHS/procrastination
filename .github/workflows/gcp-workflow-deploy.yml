@@ -38,7 +38,7 @@ jobs:
 
     - name: Create Cloud Scheduler job
       run: |
-        if ! gcloud scheduler jobs describe trigger-cloud-run-workflow --format="value(name)" > /dev/null 2>&1; then
+        if ! gcloud scheduler jobs describe trigger-cloud-run-workflow --format="value(name)" >= /dev/null 2>&1; then
           echo "Job 'trigger-run-workflow' does not exist. Creating..."
           gcloud scheduler jobs create http trigger-cloud-run-workflow \
           --schedule="0 * * * *" \
