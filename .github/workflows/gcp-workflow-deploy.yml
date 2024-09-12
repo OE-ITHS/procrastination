@@ -36,7 +36,7 @@ jobs:
           --location=us-central1 \
 
     - name: Delete previous Cloud Scheduler job
-      run: gcloud scheduler jobs delete trigger-cloud-run-workflow --location=us-central1
+      run: gcloud scheduler jobs delete trigger-cloud-run-workflow --location=us-central1 --quiet
 
     - name: Create Cloud Scheduler job
       run: |
