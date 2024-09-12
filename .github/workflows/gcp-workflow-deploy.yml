@@ -40,7 +40,7 @@ jobs:
 
     - name: Get Workflow URL
       run: |
-        WORKFLOW_URL=$(gcloud workflows describe my-cloud-run-workflow \
+        WORKFLOW_URL=$(gcloud workflows describe procrastination-workflow \
           --location=us-central1 \
           --format='value(operations[0].metadata.httpRequest.uri)')
         echo "WORKFLOW_URL=${WORKFLOW_URL}" >> $GITHUB_ENV
@@ -50,7 +50,6 @@ jobs:
         gcloud scheduler jobs deploy http trigger-cloud-run-workflow \
           --schedule="0 * * * *" \
           --http-method=POST \
-          --uri=""
-          --topic=workflow-trigger-topic \
+          --uri="${{ env.WORKFLOW_URL }}" \
           --message-body='{"service_url":"${{ secrets.CLOUD_RUN_URL }}"}' \
           --time-zone="America/New_York"
