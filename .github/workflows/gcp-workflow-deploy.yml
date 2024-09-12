@@ -29,24 +29,28 @@ jobs:
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-    - name: Deploy Workflow to Google Cloud
+    - name: Deploy Google Cloud Workflow
       run: |
-        gcloud workflows deploy procrastination-workflow --source=pipelines/gcp-workflow.yml --location=us-central1
-
-    - name: Set up Cloud Scheduler job
-      run: |
-        if ! gcloud pubsub topics describe workflow-trigger-topic > /dev/null 2>&1; then
-          gcloud pubsub topics create workflow-trigger-topic 
-          echo "Topic 'workflow-trigger-topic' created."
-        else
-          echo "Topic 'workflow-trigger-topic' already exists."
-        fi
         gcloud workflows deploy procrastination-workflow \
           --source=pipelines/gcp-workflow.yml \
+          --location=us-central1
+
+    - name: Wait for Workflow Deployment
+      run: sleep 30
+
+    - name: Get Workflow URL
+      run: |
+        WORKFLOW_URL=$(gcloud workflows describe my-cloud-run-workflow \
           --location=us-central1 \
-          --trigger-topic=projects/${{ secrets.GCP_PROJECT_ID }}/topics/workflow-trigger-topic
-        gcloud scheduler jobs deploy pubsub trigger-cloud-run-workflow \
+          --format='value(operations[0].metadata.httpRequest.uri)')
+        echo "WORKFLOW_URL=${WORKFLOW_URL}" >> $GITHUB_ENV
+
+    - name: Create Cloud Scheduler job
+      run: |
+        gcloud scheduler jobs deploy http trigger-cloud-run-workflow \
           --schedule="0 * * * *" \
+          --http-method=POST \
+          --uri=""
           --topic=workflow-trigger-topic \
           --message-body='{"service_url":"${{ secrets.CLOUD_RUN_URL }}"}' \
           --time-zone="America/New_York"
