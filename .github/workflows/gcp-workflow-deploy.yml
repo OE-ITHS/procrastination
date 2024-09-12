@@ -46,6 +46,7 @@ jobs:
         --http-method=POST \
         --location=us-central1 \
         --uri="https://workflowexecutions.googleapis.com/v1/projects/${{secrets.GCP_PROJECT_ID}}/locations/us-central1/workflows/procrastination-workflow/executions" \
+        --oidc-service-account-email=${{ secrets.GCP_SERVICE_ACCOUNT }}
         --headers Content-Type=application/json \
         --message-body='{"service_url": "${{ secrets.CLOUD_RUN_URL }}"}' \
         --time-zone="UTC"
