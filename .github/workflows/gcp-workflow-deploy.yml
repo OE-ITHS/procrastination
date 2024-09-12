@@ -46,7 +46,7 @@ jobs:
         --uri="https://workflowexecutions.googleapis.com/v1/projects/${{secrets.GCP_PROJECT_ID}}/locations/us-central1/workflows/procrastination-workflow/executions" \
         --oauth-service-account-email=${{ secrets.GCP_SERVICE_ACCOUNT }} \
         --headers Content-Type=application/json \
-        --message-body='{"service_url": "${{ secrets.CLOUD_RUN_URL }}"}' \
+        --message-body='{ "arguments": "{\"service_url\": \"${{ secrets.CLOUD_RUN_URL }}\"}" }' \
         --time-zone="UTC"
 
     # - name: Create Cloud Scheduler job
