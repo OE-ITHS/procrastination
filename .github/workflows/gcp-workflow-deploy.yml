@@ -36,20 +36,6 @@ jobs:
           --location=us-central1 \
           --source=./pipelines/gcp-workflow.yml
 
-        gcloud workflows update procrastination-workflow \
-          --location=us-central1 \
-          --metadata="httpRequestUri=${{ secrets.CLOUD_RUN_URL }}"
-
-    - name: Wait for Workflow Deployment
-      run: sleep 30
-
-    - name: Get Workflow URL
-      run: |
-        WORKFLOW_URL=$(gcloud workflows describe procrastination-workflow \
-          --location=us-central1 \
-          --format='value(operations[0].metadata.httpRequest.uri)')
-        echo "WORKFLOW_URL=${WORKFLOW_URL}" >> $GITHUB_ENV
-
     - name: Create Cloud Scheduler job
       run: |
         if ! gcloud scheduler jobs describe trigger-cloud-run-workflow --format="value(name)" >/dev/null 2>&1; then
@@ -57,7 +43,7 @@ jobs:
           gcloud scheduler jobs create http trigger-cloud-run-workflow \
           --schedule="0 * * * *" \
           --http-method=POST \
-          --uri="${{ env.WORKFLOW_URL }}" \
+          --uri="https://workflowexecutions.googleapis.com/v1/projects/${{ secrets.GCP_PROJECT_ID }}/location/us-central1/workflows/procrastination-workflow:run" \
           --message-body='{"service_url":"${{ secrets.CLOUD_RUN_URL }}"}' \
           --time-zone="America/New_York"
         else
@@ -65,7 +51,7 @@ jobs:
           gcloud scheduler jobs update http trigger-cloud-run-workflow \
           --schedule="0 * * * *" \
           --http-method=POST \
-          --uri="${{ env.WORKFLOW_URL }}" \
+          --uri="https://workflowexecutions.googleapis.com/v1/projects/${{ secrets.GCP_PROJECT_ID }}/location/us-central1/workflows/procrastination-workflow:run" \
           --message-body='{"service_url":"${{ secrets.CLOUD_RUN_URL }}"}' \
           --time-zone="America/New_York"
         fi
