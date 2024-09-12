@@ -43,6 +43,7 @@ jobs:
         gcloud scheduler jobs create http trigger-cloud-run-workflow \
         --schedule="0 * * * *" \
         --http-method=POST \
+        --location=us-central1 \
         --uri="https://workflowexecutions.googleapis.com/v1/projects/${{secrets.GCP_PROJECT_ID}}/locations/us-central1/workflows/procrastination-workflow/executions" \
         --headers Content-Type=application/json \
         --message-body='{"service_url": "${{ secrets.CLOUD_RUN_URL }}"}' \
