@@ -14,7 +14,7 @@ main:
   - log_response:
       call: sys.log
       args:
-        message: ${"Recieved service_url is = " + input_data.service_url}
+        data: ${"Recieved service_url is = " + input_data.service_url}
 
   # Step 2: Return the response from the Cloud Run service
   - returnResponse:
