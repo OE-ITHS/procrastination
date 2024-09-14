@@ -47,5 +47,5 @@ jobs:
         --uri="https://workflowexecutions.googleapis.com/v1/projects/${{secrets.GCP_PROJECT_ID}}/locations/us-central1/workflows/procrastination-workflow/executions" \
         --oauth-service-account-email=${{ secrets.GCP_SERVICE_ACCOUNT }} \
         --headers Content-Type=application/json \
-        --message-body='{ "argument": "{\"service_url\": \"${{ secrets.CLOUD_RUN_URL }}\"}" }' \
+        --message-body='{ "argument": "{\"cloud_run_url\": \"${{ secrets.CLOUD_RUN_URL }}\", \"cloud_functions_url\": \"${{ secrets.CLOUD_FUNCTIONS_URL }}\"}" }' \
         --time-zone="UTC"
