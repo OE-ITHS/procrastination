@@ -58,3 +58,4 @@ jobs:
           --runtime=python310 \
           --source=./pipes/transformed-model-predictions/ \
           --trigger-http \
+          --memory=1024Mi
