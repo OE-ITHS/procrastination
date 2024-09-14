@@ -21,7 +21,7 @@ def load_prediction_to_bigquery(weather_prediction: float, used_data_datetime: i
 
     # Define schema layout of BigQuery table.
     schema = [
-        bigquery.SchemaField("temp_pred", "NUMERIC"),
+        bigquery.SchemaField("temp_pred", "FLOAT64"),
         bigquery.SchemaField("prediction_datetime", "TIMESTAMP")
     ]
 
