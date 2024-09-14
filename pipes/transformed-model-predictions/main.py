@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 import pandas as pd
 import joblib
 from bigquery_weather import fetch_bq_data
+from transform import transform_data
 
 app = Flask(__name__)
 
@@ -12,19 +13,25 @@ def make_predictions():
 
     df = fetch_bq_data()
 
+    if df == 'not found':
+        # Return descriptive error message
+        return jsonify({'error': 'Failed to fetch weather data'}), 500
+
+    if 'temp_lag_3' not in df.columns:
+        try:
+            df = transform_data(df)
+        except Exception as e:
+            # Provide descriptive error message
+            print(f'Failed to transform data: {e}')
+            return jsonify({'error': 'Failed to transform data: Invalid data structure'}), 500
+
     X = df[['hour', 'month', 'temp','humidity','pressure','temp_lag_1','temp_lag_3']]
-    # y = df['temp_target']
 
     y_pred = model.predict(X)
 
-    # Provide descriptive error messages.
-    if weather_data is None:
-        return jsonify({'error': 'Failed to fetch weather data'}), 500
-    if not load_data_to_bigquery(weather_data):
-        return jsonify({'error': 'Failed to load data to BigQuery'}), 500
-    return jsonify({'message': 'Data stored successfully!'})
+    current_prediction = y_pred[-1]
 
-    return 'Oh uuuh I dunno'
+    return jsonify({'message': f'Prediction: {current_prediction}'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
