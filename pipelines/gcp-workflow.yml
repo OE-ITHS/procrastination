@@ -29,4 +29,7 @@ main:
 
   # Step 2: Return the response from the Cloud Run service
   - returnResponse:
-      return: ${"cloud_run_service_response:" + cloud_run_service_response + " | cloud_functions_response:" + cloud_functions_service_response}
+      return: '${
+        "*cloud_run_service_response*: " + cloud_run_service_response + 
+        "\n*cloud_functions_response*: " + cloud_functions_service_response
+        }'
