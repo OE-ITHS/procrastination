@@ -1,6 +1,5 @@
 from google.cloud import bigquery
 import pandas as pd
-import xgboost as xgb
 
 def fetch_bq_data() -> pd.DataFrame:
     '''
