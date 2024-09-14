@@ -1,5 +1,5 @@
 # Name that appears in github actions page
-name: Deploy transformed-model-predicitons to Cloud Run Functions
+name: Deploy transformed-model-predictions to Cloud Run Functions
 
 # Controls when the workflow will run
 on:
