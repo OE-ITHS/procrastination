@@ -16,7 +16,7 @@ main:
       args:
         data: ${"Recieved cloud_run_url is = " + input_data.cloud_run_url}
 
-  = invokeCloudFunctionsService:
+  - invokeCloudFunctionsService:
       call: http.get
       args:
         url: ${input_data.cloud_functions_url}
