@@ -1,37 +1,48 @@
 # workflow.yml
 
 main:
+  # Recieve argument dictionary from Cloud Scheduler.
   params: [input_data]
 
   steps:
-  # Step 1: Make a simple HTTP request to the Cloud Run service
+  # Make a HTTP request to the Cloud Run service.
   - invokeCloudRunService:
       call: http.get
       args:
         url: ${input_data.cloud_run_url}
       result: cloud_run_service_response
 
+  # Log the response of the HTTP request to Cloud Run.
   - log_response_run:
       call: sys.log
       args:
+        data: ${cloud_run_service_response}
+
+  # Log the url recieved from scheduler for debug purposes.
+  - log_run_url:
+      call:
+      args:
         data: ${"Recieved cloud_run_url is = " + input_data.cloud_run_url}
 
+  # Make a HTTP request to the Cloud Run service.
   - invokeCloudFunctionsService:
       call: http.get
       args:
         url: ${input_data.cloud_functions_url}
       result: cloud_functions_service_response
 
+  # Log the response of the HTTP request to Cloud Functions.
   - log_response_functions:
+      call: sys.log
+      args:
+        data: ${cloud_functions_service_response}
+
+  # Log the url recieved from scheduler for debug purposes.
+  - log_functions_url:
       call: sys.log
       args:
         data: ${"Recieved cloud_functions_url is = " + input_data.cloud_functions_url}
 
-  # Step 2: Return the response from the Cloud Run/Functions service
-  - assign_vars:
-      assign:
-        - concatLines: ${"cloud_run_service_response = "+cloud_run_service_response}
-        - concatLines: ${concatLines+" | "}
-        - concatLines: ${concatLines+"cloud_function_service_response = "+cloud_functions_service_response}
+  # Return simple message that workflow finished.
   - returnResponse:
-      return: ${concatLines}
+      return: "Workflow successfully finished"
