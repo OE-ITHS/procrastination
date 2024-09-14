@@ -55,5 +55,5 @@ jobs:
           --region=us-central1 \
           --allow-unauthenticated \
           --runtime=python310 \
-          --source=.pipes/transformed-model-predictions/ \
+          --source=./pipes/transformed-model-predictions/ \
           --trigger-http \
