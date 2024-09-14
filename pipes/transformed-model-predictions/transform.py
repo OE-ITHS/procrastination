@@ -19,6 +19,6 @@ def transform_data(df: pd.DataFrame) -> pd.DataFrame:
     parsed_df = parsed_df.dropna()
 
     # Prints number of pd.DataFrame rows that is used for .predict() to gcp logging to make sure it's only 1 row.
-    print(f'Pandas DataFrame has {parsed_df.rows} number of rows after transformation and .dropna().')
+    print(f'Pandas DataFrame has {parsed_df.shape[0]} number of rows after transformation and .dropna().')
 
     return parsed_df
