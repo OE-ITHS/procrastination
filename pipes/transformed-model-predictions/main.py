@@ -17,7 +17,7 @@ def make_predictions(request):
 
     df = fetch_bq_data()
 
-    if df == 'not found':
+    if not isinstance(df, pd.DataFrame):
         # Return descriptive error message
         return jsonify({'error': 'Failed to fetch weather data'}), 500
 
