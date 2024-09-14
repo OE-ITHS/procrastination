@@ -1,21 +1,6 @@
 # workflow.yml
 
 main:
-<<<<<<< HEAD
-  params: [input_data]
-
-  steps:
-  # Step 1: Make a simple HTTP request to the Cloud Run service
-  - invokeCloudRunService:
-      call: http.get
-      args:
-        url: ${input_data.service_url}
-      result: service_response
-
-  # Step 2: Return the response from the Cloud Run service
-  - returnResponse:
-      return: ${service_response}
-=======
   # Recieve argument dictionary from Cloud Scheduler.
   params: [input_data]
 
@@ -61,4 +46,3 @@ main:
   # Return simple message that workflow finished.
   - returnResponse:
       return: "Workflow successfully finished"
->>>>>>> gcp-workflow-deploy-testing
