@@ -52,6 +52,7 @@ jobs:
     - name: Deploy to Google Cloud Run Functions
       run: |
         gcloud functions deploy make_predictions \
+          --gen2 \
           --region=us-central1 \
           --allow-unauthenticated \
           --runtime=python310 \
