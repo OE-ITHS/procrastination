@@ -6,7 +6,7 @@ def transform_data(df: pd.DataFrame) -> pd.DataFrame:
     '''
 
     # Generate time-based features
-    df['hour'] = pd.to_datetime(df['dt;'], unit='s').dt.hour
+    df['hour'] = pd.to_datetime(df['dt'], unit='s').dt.hour
     df['month'] = pd.to_datetime(df['dt'], unit='s').dt.month
     
     # Generate lag features (e.g., temperature 1 hour ago)
