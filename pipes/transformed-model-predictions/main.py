@@ -7,7 +7,7 @@ from transform import transform_data
 app = Flask(__name__)
 
 @app.route('/predict', methods=['GET'])
-def make_predictions():
+def make_predictions(request):
 
     try:
         model = joblib.load('./ml-model/weather_forecasting_model_stockholm_xgb.pkl')
