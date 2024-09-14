@@ -14,7 +14,7 @@ def transform_data(df: pd.DataFrame) -> pd.DataFrame:
     df['temp_lag_3'] = df['temp'].shift(3)
 
     # Feature selection (yes I'm copying from Esoon's github)
-    parsed_df = df[['hour', 'month', 'temp', 'humidity', 'pressure', 'temp_lag_1', 'temp_lag_3']]
+    parsed_df = df[['hour', 'month', 'temp', 'humidity', 'pressure', 'temp_lag_1', 'temp_lag_3', 'dt']]
 
     parsed_df = parsed_df.dropna()
 

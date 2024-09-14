@@ -48,7 +48,7 @@ def make_predictions(request):
         return jsonify({'error': 'Failed to predict temperature'}), 500
 
     # Checks if data was successfully loaded to bigquery table and sends corresponding response message.
-    if not load_prediction_to_bigquery(y_pred):
+    if not load_prediction_to_bigquery(y_pred, df['dt'].iloc[0]):
         return jsonify({'error': 'Failed to load prediction to BigQuery'}), 500
     return jsonify({'message': 'Prediction generated and stored successfully!'})
 
