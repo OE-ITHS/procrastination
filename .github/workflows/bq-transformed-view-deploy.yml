@@ -8,6 +8,7 @@ on:
     # Only trigger workflow if the push or pull request was on branch 'main'
     branches:
       - 'main'
+      - 'gcp-workflow-deploy-testing'
     # Only trigger workflow if the push or pull request contains commits with changes to anything in these directories/files
     paths:
       - '.github/workflows/bq-transformed-view-deploy.yml'
