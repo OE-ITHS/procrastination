@@ -63,7 +63,7 @@ jobs:
         --schedule="0 * * * *" \
         --http-method=POST \
         --location=us-central1 \
-        --uri="${{ secrets.GCP_WORKFLOW_URL }}" \
+        --uri=${{ secrets.GCP_WORKFLOW_URL }} \
         --oauth-service-account-email=${{ secrets.GCP_SERVICE_ACCOUNT }} \
         --headers Content-Type=application/json \
         --message-body='{ "argument": "{\"cloud_run_url\": \"${{ secrets.CLOUD_RUN_URL }}\", \"cloud_functions_url\": \"${{ secrets.CLOUD_FUNCTIONS_URL }}\"}" }' \
