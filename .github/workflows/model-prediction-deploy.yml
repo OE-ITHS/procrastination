@@ -53,7 +53,7 @@ jobs:
       run: |
         gcloud functions deploy make_predictions \
           --region=us-central1 \
-          --allow-unathenticated \
+          --allow-unauthenticated \
           --runtime=python310 \
           --source=.pipes/transformed-model-predictions/ \
           --trigger-http \
