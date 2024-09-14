@@ -16,7 +16,7 @@ main:
   - log_response_run:
       call: sys.log
       args:
-        data: ${cloud_run_service_response}
+        data: ${"cloud_run_service_response = "+cloud_run_service_response}
 
   # Log the url recieved from scheduler for debug purposes.
   - log_run_url:
@@ -35,7 +35,7 @@ main:
   - log_response_functions:
       call: sys.log
       args:
-        data: ${cloud_functions_service_response}
+        data: ${"cloud_functions_service_response = "+cloud_functions_service_response}
 
   # Log the url recieved from scheduler for debug purposes.
   - log_functions_url:
