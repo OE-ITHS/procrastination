@@ -1,12 +1,12 @@
 from flask import Flask, jsonify
 import pandas as pd
-import joblib
+import joblib, xgboost
 from bigquery_weather import fetch_bq_data
 from transform import transform_data
 
 app = Flask(__name__)
 
-@app.route('/predict', methods=['GET', 'POST'])
+@app.route('/predict', methods=['GET'])
 def make_predictions():
 
     try:
