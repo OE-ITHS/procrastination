@@ -35,8 +35,10 @@ SELECT
 
   CAST(JSON_EXTRACT_SCALAR(json_raw, '$.clouds.all') AS INT64) AS clouds_all,
   
+  CAST(JSON_EXTRACT_SCALAR(json_raw, '$.dt') AS INT64) AS dt,
+
   -- Convert epoch timestamps to UTC
-  TIMESTAMP_SECONDS(CAST(JSON_EXTRACT_SCALAR(json_raw, '$.dt') AS INT64)) AS dt,
+  TIMESTAMP_SECONDS(CAST(JSON_EXTRACT_SCALAR(json_raw, '$.dt') AS INT64)) AS datetime_utc,
   TIMESTAMP_SECONDS(CAST(JSON_EXTRACT_SCALAR(json_raw, '$.sys.sunrise') AS INT64)) AS sunrise,
   TIMESTAMP_SECONDS(CAST(JSON_EXTRACT_SCALAR(json_raw, '$.sys.sunset') AS INT64)) AS sunset,
   

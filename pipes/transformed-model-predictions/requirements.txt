@@ -1,0 +1,6 @@
+google-cloud-bigquery[pandas]==3.25.0
+Flask==3.0.3
+pandas==2.2.2
+pyarrow==17.0.0
+joblib==1.4.2
+xgboost==2.1.1

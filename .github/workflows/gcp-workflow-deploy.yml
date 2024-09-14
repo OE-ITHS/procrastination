@@ -1,73 +1,70 @@
+# Name that appears in github actions page
 name: Deploy Google Cloud Workflow
 
+# Controls when the workflow will run
 on:
+  # Triggers the workflow on push or pull request events
   push:
+    # Only trigger workflow if the push or pull request was on branch 'main'
     branches:
       - 'main'
+      - 'gcp-workflow-deploy-testing'
+    # Only trigger workflow if the push or pull request contains commits with changes to anything in these directories/files
     paths:
       - '.github/workflows/gcp-workflow-deploy.yml'
       - 'pipelines/**'
   pull_request:
     branches:
-        - 'main'
+      - 'main'
     paths:
-        - '.github/workflows/gcp-workflow-deploy.yml'
-        - 'pipelines/**'
+      - '.github/workflows/gcp-workflow-deploy.yml'
+      - 'pipelines/**'
 
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel | In this case we only have 1 job
 jobs:
+  # This workflow contains a single job called "deploy"
   deploy:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+
+      # Clones repository code to github runner, so workflow can access the files
     - name: Checkout code
       uses: actions/checkout@v3
 
+      # Authenticates to Google Cloud to recieve necessary permissions
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
 
+      # Deploys Google Cloud Workflow to gcp
     - name: Deploy Google Cloud Workflow
       run: |
         gcloud workflows deploy procrastination-workflow \
           --source=./pipelines/gcp-workflow.yml \
           --location=us-central1 \
 
+      # Deletes previous Cloud Scheduler job. This is because cloud scheduler doesn't have a "deploy" command, thus conflicting when there already exists a job
     - name: Delete previous Cloud Scheduler job
+      # Continues on error, such as there not going a job with the used name
       continue-on-error: true
       run: gcloud scheduler jobs delete trigger-cloud-run-workflow --location=us-central1 --quiet
 
+      # Creates Cloud Scheduler job on gcp. Sets cron to be hourly, http method to be POST
+      # as well as the url to the workflow, type of body sent to workflow and what arguments the message body contains
     - name: Create Cloud Scheduler job
       run: |
         gcloud scheduler jobs create http trigger-cloud-run-workflow \
         --schedule="0 * * * *" \
         --http-method=POST \
         --location=us-central1 \
-        --uri="https://workflowexecutions.googleapis.com/v1/projects/${{secrets.GCP_PROJECT_ID}}/locations/us-central1/workflows/procrastination-workflow/executions" \
+        --uri=${{ secrets.GCP_WORKFLOW_URL }} \
         --oauth-service-account-email=${{ secrets.GCP_SERVICE_ACCOUNT }} \
         --headers Content-Type=application/json \
-        --message-body='{ "argument": "{\"service_url\": \"${{ secrets.CLOUD_RUN_URL }}\"}" }' \
+        --message-body='{ "argument": "{\"cloud_run_url\": \"${{ secrets.CLOUD_RUN_URL }}\", \"cloud_functions_url\": \"${{ secrets.CLOUD_FUNCTIONS_URL }}\"}" }' \
         --time-zone="UTC"
-
-    # - name: Create Cloud Scheduler job
-    #   run: |
-    #     if gcloud scheduler jobs describe trigger-cloud-run-workflow --format="value(name)" > /dev/null 2>&1; then
-    #       echo "Job 'trigger-run-workflow' exists. Updating..."
-    #       gcloud scheduler jobs update http trigger-cloud-run-workflow \
-    #       --schedule="0 * * * *" \
-    #       --http-method=POST \
-    #       --uri="https://workflowexecutions.googleapis.com/v1/projects/${{secrets.GCP_PROJECT_ID}}/locations/us-central1/workflows/procrastination-workflow/executions" \
-    #       --headers Content-Type=application/json \
-    #       --message-body='{"service_url": "${{ secrets.CLOUD_RUN_URL }}"}' \
-    #       --time-zone="UTC"
-    #     else
-    #       echo "Job 'trigger-run-workflow' does not exist. Creating..."
-    #       gcloud scheduler jobs create http trigger-cloud-run-workflow \
-    #       --schedule="0 * * * *" \
-    #       --http-method=POST \
-    #       --location=us-central1 \
-    #       --uri="https://workflowexecutions.googleapis.com/v1/projects/${{secrets.GCP_PROJECT_ID}}/locations/us-central1/workflows/procrastination-workflow/executions" \
-    #       --headers Content-Type=application/json \
-    #       --message-body='{"service_url": "${{ secrets.CLOUD_RUN_URL }}"}' \
-    #       --time-zone="UTC"
-    #     fi
