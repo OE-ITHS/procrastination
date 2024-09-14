@@ -16,27 +16,21 @@ def fetch_bq_data() -> pd.DataFrame:
     dataset_id = 'weather_data'
     view_id = 'weather_transformed'
 
+    # Defines query that's going to be used on the bigquery view.
     query = f'SELECT * FROM `{project_id}.{dataset_id}.{view_id}` ORDER BY dt DESC LIMIT 4'
 
     try:
-
+        # Uses query on bigquery "as a while" (which is why project and dataset is specified above).
         query_job = bigquery_client.query(query)
 
+        # Fetches the resulting data from the query.
         results = query_job.result()
 
         df = results.to_dataframe()
-        
-        # # Creates a pointer (ish) object to the dataset using the project- and dataset id
-        # dataset_ref = bigquery.DatasetReference(project_id, dataset_id)
-        # # Creates a pointer (ish) object to the table (on this case a view) using the previous dataset_ref
-        # table_ref = dataset_ref.table(view_id)
-        # # Creates a table object with the same data as the actual table on bigquery using the previous table_ref
-        # table = bigquery_client.get_table(table_ref)
-
-        # # Uses the previously initalized bigquery client to list all the rows of the table object and puts them in a (pandas) dataframe.
-        # df = bigquery_client.list_rows(table).to_dataframe()
 
         return df
     except Exception as e:
+        # Prints potential error message (which will appear in google cloud logging by default).
         print(f'fetching bigquery data failed: {e}')
+        # Returns string used as indicator for jsonify error message in main.
         return 'not found'
