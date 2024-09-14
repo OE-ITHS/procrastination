@@ -27,9 +27,11 @@ main:
       args:
         data: ${"Recieved cloud_functions_url is = " + input_data.cloud_functions_url}
 
-  # Step 2: Return the response from the Cloud Run service
+  # Step 2: Return the response from the Cloud Run/Functions service
+  - assign_vars:
+      assign:
+        - concatLines: ${"cloud_run_service_response = "+"{cloud_run_service_response}"}
+        - concatLines: ${concatLines+"\n"}
+        - concatLines: ${concatLines+"cloud_function_service_response = "+"{cloud_functions_service_response}"}
   - returnResponse:
-      return: '${
-        "*cloud_run_service_response*: " + cloud_run_service_response + 
-        "\n*cloud_functions_response*: " + cloud_functions_service_response
-        }'
+      return: ${concatLines}
