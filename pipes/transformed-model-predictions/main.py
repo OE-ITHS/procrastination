@@ -6,10 +6,14 @@ from transform import transform_data
 
 app = Flask(__name__)
 
-@app.route('/predict', methods=['GET'])
+@app.route('/predict', methods=['GET', 'POST'])
 def make_predictions():
 
-    model = joblib.load('./ml-model/weather_forecasting_model_stockholm_xgb.pkl')
+    try:
+        model = joblib.load('./ml-model/weather_forecasting_model_stockholm_xgb.pkl')
+    except Exception as e:
+        print(f'Failed to load xgb model: {e}')
+        return jsonify({'error': 'Failed to load xgb model'}), 500
 
     df = fetch_bq_data()
 
@@ -27,7 +31,11 @@ def make_predictions():
 
     X = df[['hour', 'month', 'temp','humidity','pressure','temp_lag_1','temp_lag_3']]
 
-    y_pred = model.predict(X)
+    try:
+        y_pred = model.predict(X)
+    except Exception as e:
+        print(f'model.predict failed: {e}')
+        return jsonify({'error': 'Failed to predict temperature'}), 500
 
     current_prediction = y_pred[-1]
 
