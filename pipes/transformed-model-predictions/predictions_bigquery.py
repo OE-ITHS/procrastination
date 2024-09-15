@@ -21,11 +21,11 @@ def load_prediction_to_bigquery(weather_prediction: float, used_data_datetime: i
 
     # Define schema layout of BigQuery table.
     schema = [
-        bigquery.SchemaField(name="temp_pred",     field_type="FLOAT64",   description="Predicted max temperature for following 24 hour period (not counting current hour)."),
-        bigquery.SchemaField(name="data_dt",       field_type="TIMESTAMP", description="Datetime of \"base\" data row used for prediction. UTC."                            ),
-        bigquery.SchemaField(name="pred_dt",       field_type="TIMESTAMP", description="Datetime prediction was made. UTC."                                                 ),
-        bigquery.SchemaField(name="pred_start_dt", field_type="TIMESTAMP", description="Starting datetime of 24 hour period the predicted temperature applies for. UTC."    ),
-        bigquery.SchemaField(name="pred_end_dt",   field_type="TIMESTAMP", description="Ending datetime of 24 hour period the predicted temperature applies for. UTC."      )
+        bigquery.SchemaField(name="temp_pred",     field_type="FLOAT64",   description="Predicted max temperature (celsius) for following 24 hour period."              ),
+        bigquery.SchemaField(name="data_dt",       field_type="TIMESTAMP", description="Datetime of \"base\" data row used for prediction. UTC."                        ),
+        bigquery.SchemaField(name="pred_dt",       field_type="TIMESTAMP", description="Datetime prediction was made. UTC."                                             ),
+        bigquery.SchemaField(name="pred_start_dt", field_type="TIMESTAMP", description="Starting datetime of 24 hour period the predicted temperature applies for. UTC."),
+        bigquery.SchemaField(name="pred_end_dt",   field_type="TIMESTAMP", description="Ending datetime of 24 hour period the predicted temperature applies for. UTC."  )
     ]
 
     # Creates more descriptive datetime for swedish time relative to UTC.
