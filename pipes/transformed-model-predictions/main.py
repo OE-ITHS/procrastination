@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 import pandas as pd
-import joblib, xgboost
+import joblib
 from bigquery_weather import fetch_bq_data
 from transform import transform_data
 from predictions_bigquery import load_prediction_to_bigquery
@@ -26,6 +26,11 @@ def make_predictions(request):
     if not isinstance(df, pd.DataFrame):
         # Return descriptive error message
         return jsonify({'error': 'Failed to fetch weather data'}), 500
+
+    # Checks if query result returned enough rows to perform predictions (4)
+    if df.shape[0] < 4:
+        # Return descriptive error message
+        return jsonify({'error': f'Query returned {df.shape[0]} rows; 4 needed'})
 
     # Temporary transformed data view substitute (so I could test this model prediction function and deployment before transform .sql file was finished).
     # Checks if transformed feature 'temp_lag_3' exists. If it doesn't, transforms data so that it does.
