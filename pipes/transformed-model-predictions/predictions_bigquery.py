@@ -21,14 +21,26 @@ def load_prediction_to_bigquery(weather_prediction: float, used_data_datetime: i
 
     # Define schema layout of BigQuery table.
     schema = [
-        bigquery.SchemaField("temp_pred", "FLOAT64"),
-        bigquery.SchemaField("prediction_datetime", "TIMESTAMP")
+        bigquery.SchemaField(name="temp_pred",     field_type="FLOAT64",   description="Predicted max temperature for following 24 hour period (not counting current hour)."),
+        bigquery.SchemaField(name="data_dt",       field_type="TIMESTAMP", description="Datetime of \"base\" data row used for prediction. UTC."                            ),
+        bigquery.SchemaField(name="pred_dt",       field_type="TIMESTAMP", description="Datetime prediction was made. UTC."                                                 ),
+        bigquery.SchemaField(name="pred_start_dt", field_type="TIMESTAMP", description="Starting datetime of 24 hour period the predicted temperature applies for. UTC."    ),
+        bigquery.SchemaField(name="pred_end_dt",   field_type="TIMESTAMP", description="Ending datetime of 24 hour period the predicted temperature applies for. UTC."      )
     ]
+
+    # Creates more descriptive datetime for swedish time relative to UTC.
+    sweTZobject = timezone(timedelta(hours=1), name='SWE')
+
+    # Sets the datetime of the used data to a variable for use below.
+    data_dt = datetime.fromtimestamp(used_data_datetime)
 
     # Create pandas dataframe with temp_pred and datetime of prediction.
     df = pd.DataFrame({
         'temp_pred':weather_prediction, 
-        'prediction_datetime':datetime.fromtimestamp(used_data_datetime)
+        'data_dt':data_dt,
+        'pred_dt':datetime.today().astimezone(sweTZobject),
+        'pred_start_dt':data_dt + timedelta(hours=1),
+        'pred_end_dt':data_dt + timedelta(days=1, hours=1)
     })
 
     # BigQuery job configuration.
