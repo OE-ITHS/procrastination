@@ -10,6 +10,6 @@ def format_data(df: pd.DataFrame) -> pd.DataFrame:
     df['temp_pred'] = df['temp_pred'].apply(apply_format)
 
     for column_name in ['data_dt', 'pred_dt', 'pred_start_dt', 'pred_end_dt']:
-        df[column_name] = pd.to_datetime(df[column_name]).dt.floor('min').tz_convert('Europe/Sweden')
+        df[column_name] = pd.to_datetime(df[column_name]).dt.floor('min').dt.tz_convert('Europe/Sweden')
 
     return df
