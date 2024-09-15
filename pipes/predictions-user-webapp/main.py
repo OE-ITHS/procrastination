@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for
 from bigquery_predictions import fetch_bq_predictions
+from formatter import format_data
 
 # Create Flask WSGI application instance.
 app = Flask(__name__)
@@ -14,7 +15,11 @@ def web_page():
 
         df = fetch_bq_predictions()
 
-        return render_template("index.html", column_names=df.columns.values, row_data=list(df.values.tolist()),
+        df = format_data(df)
+
+        column_names = ['predicted_temp', 'data_dt', 'prediction_dt', 'timeframe_start', 'timeframe_end']
+
+        return render_template("index.html", column_names=column_names, row_data=list(df.values.tolist()),
                             link_column="df index", zip=zip, table_bool=table_bool)
 
     return render_template("index.html", table_bool=table_bool)
