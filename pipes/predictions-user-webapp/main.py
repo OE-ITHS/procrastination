@@ -13,7 +13,7 @@ def web_page():
 @app.route('/greet', methods=['POST'])
 def greet():
     name = request.form['name']
-    return f'Hello, {name}!'
+    return render_template('index.html', message=f'Hello, {name}!')
 
 if __name__ == '__main__':
     # Run the application on port 8080.
