@@ -9,6 +9,9 @@ def transform_data(df: pd.DataFrame) -> pd.DataFrame:
     df['hour'] = pd.to_datetime(df['dt'], unit='s').dt.hour
     df['month'] = pd.to_datetime(df['dt'], unit='s').dt.month
     
+    # Convert temperatures from kelvin to celsius.
+    df['temp'] -= 273.15
+
     # Generate lag features (e.g., temperature 1 hour ago) (reversed the shift direction because I sorted data in opposite direction from training data).
     df['temp_lag_1'] = df['temp'].shift(-1)
     df['temp_lag_3'] = df['temp'].shift(-3)
