@@ -5,7 +5,7 @@ def format_data(df: pd.DataFrame) -> pd.DataFrame:
     Formats data in DataFrame for display on webapp. Returns DataFrame after formatting.
     '''
     def apply_format(number):
-        return "{:.1}".format(float(number))
+        return "{:.2}".format(float(number))
     
     df['temp_pred'] = df['temp_pred'].apply(apply_format)
 
