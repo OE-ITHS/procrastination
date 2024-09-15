@@ -25,8 +25,8 @@ def load_data_to_bigquery(weather_data: dict) -> bool:
 
     # Define schema layout of BigQuery table.
     schema = [
-        bigquery.SchemaField("json_raw", "STRING"),
-        bigquery.SchemaField("ingestion_date_UTC", "TIMESTAMP")
+        bigquery.SchemaField(name="json_raw",           field_type="STRING",    description="JSON received from API request in string format."),
+        bigquery.SchemaField(name="ingestion_date_UTC", field_type="TIMESTAMP", description="Datetime that request was made to API. UTC.")
     ]
 
     # Creates more descriptive datetime for UTC+1.
