@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
+from bigquery_predictions import fetch_bq_predictions
 
 # Create Flask WSGI application instance.
 app = Flask(__name__)
@@ -6,14 +7,22 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'])
 def web_page():
 
-    
+    table_bool = False
 
-    return render_template('index.html', message='Hello, World!')
+    if 'show_table' in request.args:
+        table_bool = True
 
-@app.route('/greet', methods=['POST'])
-def greet():
-    name = request.form['name']
-    return render_template('index.html', message=f'Hello, {name}!')
+        df = fetch_bq_predictions()
+
+        return render_template("index.html", column_names=df.columns.values, row_data=list(df.values.tolist()),
+                            link_column="df index", zip=zip, table_bool=table_bool)
+
+    return render_template("index.html", table_bool=table_bool)
+
+@app.route('/clear_table', methods=['GET'])
+def clear_table():
+    # Redirect to the base URL, which clears the table (since no 'show_table' param will be present)
+    return redirect(url_for('web_page'))
 
 if __name__ == '__main__':
     # Run the application on port 8080.
