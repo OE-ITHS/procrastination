@@ -21,8 +21,7 @@ def load_prediction_to_bigquery(weather_prediction: float, used_data_datetime: i
 
     # Define schema layout of BigQuery table.
     schema = [
-        bigquery.SchemaField(name="temp_pred_k",   field_type="FLOAT64",   description="Predicted max temperature (kelvin) for following 24 hour period."               ),
-        bigquery.SchemaField(name="temp_pred_c",   field_type="FLOAT64",   description="Predicted max temperature (celsius) for following 24 hour period."              ),
+        bigquery.SchemaField(name="temp_pred",     field_type="FLOAT64",   description="Predicted max temperature (celsius) for following 24 hour period."              ),
         bigquery.SchemaField(name="data_dt",       field_type="TIMESTAMP", description="Datetime of \"base\" data row used for prediction. UTC."                        ),
         bigquery.SchemaField(name="pred_dt",       field_type="TIMESTAMP", description="Datetime prediction was made. UTC."                                             ),
         bigquery.SchemaField(name="pred_start_dt", field_type="TIMESTAMP", description="Starting datetime of 24 hour period the predicted temperature applies for. UTC."),
@@ -37,8 +36,7 @@ def load_prediction_to_bigquery(weather_prediction: float, used_data_datetime: i
 
     # Create pandas dataframe with temp_pred and datetime of prediction.
     df = pd.DataFrame({
-        'temp_pred_k':weather_prediction, 
-        'temp_pred_c':weather_prediction - 273.15,
+        'temp_pred':weather_prediction, 
         'data_dt':data_dt,
         'pred_dt':datetime.today().astimezone(sweTZobject),
         'pred_start_dt':data_dt + timedelta(hours=1),
