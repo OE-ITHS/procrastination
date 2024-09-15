@@ -5,11 +5,11 @@ def format_data(df: pd.DataFrame) -> pd.DataFrame:
     Formats data in DataFrame for display on webapp. Returns DataFrame after formatting.
     '''
     def apply_format(number):
-        return "{:.2}".format(float(number))
+        return "{:.2f}".format(float(number))
     
     df['temp_pred'] = df['temp_pred'].apply(apply_format)
 
     for column_name in ['data_dt', 'pred_dt', 'pred_start_dt', 'pred_end_dt']:
-        df[column_name] = pd.to_datetime(df[column_name]).dt.tz_convert('Europe/Stockholm').dt.tz_localize(None).dt.floor('min')
+        df[column_name] = pd.to_datetime(df[column_name]).dt.tz_convert('Europe/Stockholm').dt.tz_localize(None).dt.strftime('%Y-%m-%d %H:%M')
 
     return df
