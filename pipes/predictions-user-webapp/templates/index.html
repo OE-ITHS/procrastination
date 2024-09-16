@@ -34,23 +34,25 @@
       <button class="btn btn-lg btn-secondary fw-bold border-white bg-white text-dark" type="submit" name="show_table">Fetch predictions</button>
     </form>
       {% if table_bool %}
-      <table style="margin: 10px auto;">
-        <tr>
-            {% for col in column_names %}
-            <th>{{col}}</th>
-            {% endfor %}
-        </tr>
-        {% for row in row_data %}
-        <tr>
-            {% for col, row_ in zip(column_names, row) %}
-            {% if col == link_column %}
-            {% else %}
-            <td>{{row_}}</td>
-            {% endif %}
-            {% endfor %}
-        </tr>
-        {% endfor %}
-      </table>
+      <div style="overflow-x:auto;">
+        <table style="margin: 10px auto;">
+          <tr>
+              {% for col in column_names %}
+              <th>{{col}}</th>
+              {% endfor %}
+          </tr>
+          {% for row in row_data %}
+          <tr>
+              {% for col, row_ in zip(column_names, row) %}
+              {% if col == link_column %}
+              {% else %}
+              <td>{{row_}}</td>
+              {% endif %}
+              {% endfor %}
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
 
       <!-- Button to clear the table by redirecting -->
       <form action="/clear_table" method="get">
