@@ -11,7 +11,14 @@ def fetch_bq_predictions() -> pd.DataFrame:
     '''
 
     # Initialize bigquery client and set values for project, dataset and table.
-    bigquery_client = bigquery.Client()
+    try:
+        bigquery_client = bigquery.Client()
+    except Exception as e:
+        # Prints potential error message (which will appear in google cloud logging by default).
+        print(f'Failed to initialize bigquery client: {e}')
+        # Returns string used as indicator for jsonify error message in main.
+        return 'not found'
+    
     project_id = 'acquired-sound-433108-c6'
     dataset_id = 'weather_data'
     view_id = 'weather_prediction'
