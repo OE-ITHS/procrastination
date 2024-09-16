@@ -35,7 +35,7 @@
     </form>
       {% if table_bool %}
       <div style="overflow-x:auto;">
-        <table style="margin: 10px auto;">
+        <table class=".shrinkingTable" style="margin: 10px auto;">
           <tr>
               {% for col in column_names %}
               <th>{{col}}</th>
@@ -79,7 +79,7 @@
             color: #222222;
         }
 
-        @media (max-width:1000px){
+        @media only screen and (max-width:1000px){
           .shrinkingTable th:nth-child(2),
           .shrinkingTable td:nth-child(2),
           .shrinkingTable th:nth-child(3),
