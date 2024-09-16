@@ -88,6 +88,22 @@
           }
         }
       </style>
+
+      <script>
+        function updateColumnName() {
+          const columnHeader = document.querySelector("thead th:nth-child(1)");
+
+          if (window.innerWidth <= 1000) {
+            columnHeader.textContent = "pred_temp";
+          } else {
+            columnHeader.textContent = "predicted_temp"
+          }
+        }
+
+        updateColumnName();
+        
+        window.addEventListener("resize", updateColumnName);
+      </script>
     </p>
   </main>
 
