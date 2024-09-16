@@ -10,34 +10,7 @@
 
     <title>Model Predictions</title>
 
-    <!-- CSS code to change stylistic properties of the DataFrame table -->
-    <style>
-      table {
-          font-family: arial, sans-serif;
-          border-collapse: collapse;
-          width: 50vw;
-      }
 
-      td, th {
-          border: 1px solid #dddddd;
-          text-align: left;
-          padding: 8px;
-      }
-
-      tr:nth-child(even) {
-          background-color: #dddddd;
-          color: #222222;
-      }
-
-      @media only screen and (max-width:1000px){
-        .shrinkingTable th:nth-child(2),
-        .shrinkingTable td:nth-child(2),
-        .shrinkingTable th:nth-child(3),
-        .shrinkingTable td:nth-child(3) {
-          display: none;
-        }
-      }
-    </style>
   </head>
 <body class="d-flex h-100 text-center text-white bg-dark">
     
@@ -53,7 +26,7 @@
     <h1>Team Procrastination</h1>
     <p class="lead">To fetch the most recent predictions, press the "Fetch predictions" button below.</p>
     {% if table_bool %}
-    <p class="lead">Temperatures are in Celsius. Datetimes are in local (Europe/Stockholm) time.</p>
+    <p class="lead">Temperatures are in celsius. Datetimes are in local (Europe/Stockholm) time.</p>
     {% endif %}
     <p class="lead">
     <!-- Button to show weather predictions table -->
@@ -63,25 +36,21 @@
       {% if table_bool %}
       <div style="overflow-x:auto;">
         <table class="shrinkingTable" style="margin: 10px auto;">
-          <thead>
-            <tr>
-                {% for col in column_names %}
-                <th>{{col}}</th>
-                {% endfor %}
-            </tr>
-          </thead>
-          <tbody>
-            {% for row in row_data %}
-            <tr>
-                {% for col, row_ in zip(column_names, row) %}
-                {% if col == link_column %}
-                {% else %}
-                <td>{{row_}}</td>
-                {% endif %}
-                {% endfor %}
-            </tr>
-            {% endfor %}
-          </tbody>
+          <tr>
+              {% for col in column_names %}
+              <th>{{col}}</th>
+              {% endfor %}
+          </tr>
+          {% for row in row_data %}
+          <tr>
+              {% for col, row_ in zip(column_names, row) %}
+              {% if col == link_column %}
+              {% else %}
+              <td>{{row_}}</td>
+              {% endif %}
+              {% endfor %}
+          </tr>
+          {% endfor %}
         </table>
       </div>
 
@@ -91,22 +60,48 @@
       </form>
       {% endif %}
 
+      <!-- CSS code to change stylistic properties of the DataFrame table -->
+      <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 50vw;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+            color: #222222;
+        }
+
+        @media only screen and (max-width:1000px){
+          .shrinkingTable th:nth-child(2),
+          .shrinkingTable td:nth-child(2),
+          .shrinkingTable th:nth-child(3),
+          .shrinkingTable td:nth-child(3) {
+            display: none;
+          }
+        }
+      </style>
+
       <script>
         function updateColumnName() {
-          // Target the first <th> in the <thead> of the table with class "shrinkingTable"
-          const columnHeader = document.querySelector(".shrinkingTable thead th:nth-child(1)");
+          const columnHeader = document.querySelector("thead th:nth-child(1)");
 
           if (window.innerWidth <= 1000) {
             columnHeader.textContent = "pred_temp";
           } else {
-            columnHeader.textContent = "predicted_temp";
+            columnHeader.textContent = "predicted_temp"
           }
         }
 
-        // Run when the page loads
         updateColumnName();
         
-        // Also update the column name on window resize
         window.addEventListener("resize", updateColumnName);
       </script>
     </p>
