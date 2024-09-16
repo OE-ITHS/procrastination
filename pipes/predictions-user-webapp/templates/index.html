@@ -92,22 +92,36 @@
       {% endif %}
 
       <script>
-        function updateColumnName() {
+        function updateColumnNames() {
           // Target the first <th> in the <thead> of the table with class "shrinkingTable"
-          const columnHeader = document.querySelector(".shrinkingTable thead th:nth-child(1)");
+          const table = document.querySelector(".shrinkingTable");
+          const headers = table.querySelectorAll("thead th");
 
-          if (window.innerWidth <= 1000) {
-            columnHeader.textContent = "pred_temp";
-          } else {
-            columnHeader.textContent = "predicted_temp";
-          }
+          // Define new column names
+          const newNames = ["pred_temp", "time_start", "time_end"];
+          const defaultNames = ["predicted_temp", "timeframe_start", "timeframe_end"];
+
+          // Select all <th> elements in the table header
+          const isSmallScreen = window.innerWidth <= 1000;
+
+          // Iterate over the first 3 columns
+          [1, 4, 5].forEach((position, index) => {
+            const header = table.querySelector(`thead th:nth-child(${position})`);
+            if (header) {
+                if (isSmallScreen) {
+                    header.textContent = newNames[index] || header.textContent;
+                } else {
+                    header.textContent = defaultNames[index] || header.textContent;
+                }
+            }
+          });
         }
 
         // Run when the page loads
-        updateColumnName();
+        updateColumnNames();
         
         // Also update the column name on window resize
-        window.addEventListener("resize", updateColumnName);
+        window.addEventListener("resize", updateColumnNames);
       </script>
     </p>
   </main>
