@@ -13,10 +13,10 @@ def format_data(df: pd.DataFrame) -> pd.DataFrame:
         df['temp_pred'] = df['temp_pred'].apply(apply_format)
 
         # For all 4 columns with identically formatted datetime variables, converts to local time (Europe/Stockholm), 
-        #                 makes the datetime variable timezone-naive (removed the +0X:00 at the end of the datetime),
+        #                 makes the datetime variable timezone-naive (removes the +0X:00 at the end of the datetime),
         #                 and then changes the format of the datetime to not include seconds, since exact seconds seemed unecessary for display purposes.
         for column_name in ['data_dt', 'pred_dt', 'pred_start_dt', 'pred_end_dt']:
-            df[column_name] = pd.to_datetime(df[column_name]).dt.tz_convert('Europe/Stockholm').dt.tz_localize(None).dt.strftime('%Y-%m-%d %H:%M')
+            df[column_name] = pd.to_datetime(df[column_name]).dt.tz_convert('Europe/Stockholm').dt.tz_localize(None).dt.strftime('%b %d %H:%M')
 
         return df
     except Exception as e:
