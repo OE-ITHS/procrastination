@@ -31,7 +31,7 @@ def web_page():
             return jsonify({'error': 'Failed to transform weather prediction data'}), 500
 
         # Changed column names on webpage because bigquery names are short and concise but not as visually appealing.
-        column_names = ['predicted_temp', 'data_dt', 'prediction_dt', 'timeframe_start', 'timeframe_end']
+        column_names = ['predicted_temp', 'data_dt', 'prediction_dt', 'timeframe']
 
         # Calls flask.render_template and references index.html, as well as inputting the dataframe and variables necessary for pythonic if:s.
         return render_template("index.html", column_names=column_names, row_data=list(df.values.tolist()),

@@ -98,14 +98,14 @@
           const headers = table.querySelectorAll("thead th");
 
           // Define new column names
-          const newNames = ["pred_temp", "time_start", "time_end"];
-          const defaultNames = ["predicted_temp", "timeframe_start", "timeframe_end"];
+          const newNames = ["pred_temp", "timeframe"];
+          const defaultNames = ["predicted_temp", "timeframe"];
 
           // Select all <th> elements in the table header
           const isSmallScreen = window.innerWidth <= 1000;
 
           // Iterate over the first 3 columns
-          [1, 4, 5].forEach((position, index) => {
+          [1, 4].forEach((position, index) => {
             const header = table.querySelector(`thead th:nth-child(${position})`);
             if (header) {
                 if (isSmallScreen) {
