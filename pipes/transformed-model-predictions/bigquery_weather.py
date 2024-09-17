@@ -6,7 +6,7 @@ def fetch_bq_data() -> pd.DataFrame:
     Fetches ingestion-ready data from BigQuery and feeds it into a pandas DataFrame.
 
     :returns: :object:
-        Returns a pandas DataFrame object with all rows in the 'weather_transformed' view.
+        Returns a pandas DataFrame object with all rows in the 'weather_clean' view.
     :rtype: pd.DataFrame
     '''
 
@@ -14,7 +14,7 @@ def fetch_bq_data() -> pd.DataFrame:
     bigquery_client = bigquery.Client()
     project_id = 'acquired-sound-433108-c6'
     dataset_id = 'weather_data'
-    view_id = 'weather_transformed'
+    view_id = 'weather_clean'
 
     # Defines query that's going to be used on the bigquery view.
     query = f'SELECT * FROM `{project_id}.{dataset_id}.{view_id}` ORDER BY dt DESC LIMIT 4'

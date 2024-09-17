@@ -32,15 +32,13 @@ def make_predictions(request):
         # Return descriptive error message
         return jsonify({'error': f'Query returned {df.shape[0]} rows; 4 needed'})
 
-    # Temporary transformed data view substitute (so I could test this model prediction function and deployment before transform .sql file was finished).
-    # Checks if transformed feature 'temp_lag_3' exists. If it doesn't, transforms data so that it does.
-    if 'temp_lag_3' not in df.columns:
-        try:
-            df = transform_data(df)
-        except Exception as e:
-            # Provide descriptive error message
-            print(f'Failed to transform data: {e}')
-            return jsonify({'error': 'Failed to transform data: Invalid data structure'}), 500
+    # Additional data transformation before model predictions.
+    try:
+        df = transform_data(df)
+    except Exception as e:
+        # Provide descriptive error message
+        print(f'Failed to transform data: {e}')
+        return jsonify({'error': 'Failed to transform data: Invalid data structure'}), 500
 
     # Sets weather data parameters to be used for .predict().
     X = df[['hour', 'month', 'temp','humidity','pressure','temp_lag_1','temp_lag_3']]
