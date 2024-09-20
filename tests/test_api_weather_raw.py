@@ -8,7 +8,7 @@ weather_data = fetch_weather_data()
 ### api_weather
 
 def test_fetch_weather_data():
-    assert isinstance(weather_data, dict) or weather_data == None
+    assert isinstance(weather_data, dict) or weather_data is None
 
 ### weather_bigquery
 
