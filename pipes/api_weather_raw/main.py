@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from api_weather import fetch_weather_data
-from weather_bigquery import load_data_to_bigquery
+from weather_bigquery import get_schema, generate_df_and_config, load_to_bigquery
 
 # Create Flask WSGI application instance.
 app = Flask(__name__)
@@ -12,7 +12,12 @@ def api_weather_bq():
     # Provide descriptive error messages.
     if weather_data is None:
         return jsonify({'error': 'Failed to fetch weather data'}), 500
-    if not load_data_to_bigquery(weather_data):
+    
+    schema = get_schema()
+
+    weather_df, job_config = generate_df_and_config(weather_data, schema)
+
+    if not load_to_bigquery(weather_df, job_config):
         return jsonify({'error': 'Failed to load data to BigQuery'}), 500
     return jsonify({'message': 'Data stored successfully!'})
 

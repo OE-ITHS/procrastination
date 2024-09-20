@@ -11,13 +11,13 @@ on:
     # Only trigger workflow if the push or pull request contains commits with changes to anything in these directories/files
     paths:
       - '.github/workflows/predictions-user-webapp-deploy.yml'
-      - 'pipes/predictions-user-webapp/**'
+      - 'pipes/predictions_user_webapp/**'
   pull_request:
     branches:
       - 'main'
     paths:
       - '.github/workflows/predictions-user-webapp-deploy.yml'
-      - 'pipes/predictions-user-webapp/**'
+      - 'pipes/predictions_user_webapp/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -59,7 +59,7 @@ jobs:
       # Builds Docker image from contents of pipes/predictions-user-webapp/ in the procrastination-docker-repo/ registry repository and tags the image as the latest version
     - name: Build Docker image
       run: |
-        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/predictions-user-webapp-image:latest ./pipes/predictions-user-webapp/
+        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/predictions-user-webapp-image:latest ./pipes/predictions_user_webapp/
     
       # Pushes the just built image to the Artifact Registry in the specified repository and tag
     - name: Push Docker image

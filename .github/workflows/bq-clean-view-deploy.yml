@@ -11,13 +11,13 @@ on:
     # Only trigger workflow if the push or pull request contains commits with changes to anything in these directories/files
     paths:
       - '.github/workflows/bq-clean-view-deploy.yml'
-      - 'pipes/raw-weather-clean/**'
+      - 'pipes/raw_weather_clean/**'
   pull_request:
     branches:
       - 'main'
     paths:
       - '.github/workflows/bq-clean-view-deploy.yml'
-      - 'pipes/raw-weather-clean/**'
+      - 'pipes/raw_weather_clean/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -63,4 +63,4 @@ jobs:
           --use_legacy_sql=false \
           --format=none \
           --quiet \
-          < ./pipes/raw-weather-clean/weather-clean-view.sql
+          < ./pipes/raw_weather_clean/weather-clean-view.sql

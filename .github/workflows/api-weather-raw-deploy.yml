@@ -11,13 +11,13 @@ on:
     # Only trigger workflow if the push or pull request contains commits with changes to anything in these directories/files
     paths:
       - '.github/workflows/api-weather-raw-deploy.yml'
-      - 'pipes/api-weather-raw/**'
+      - 'pipes/api_weather_raw/**'
   pull_request:
     branches:
       - 'main'
     paths:
       - '.github/workflows/api-weather-raw-deploy.yml'
-      - 'pipes/api-weather-raw/**'
+      - 'pipes/api_weather_raw/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -59,7 +59,7 @@ jobs:
       # Builds Docker image from contents of pipes/api-weather-raw/ in the procrastionation-docker-repo/ registry repository and tags the image as the latest version
     - name: Build Docker image
       run: |
-        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/api-weather-raw-image:latest ./pipes/api-weather-raw/
+        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/api-weather-raw-image:latest ./pipes/api_weather_raw/
     
       # Pushes the just built image to the Artifact Registry in the specified repository and tag
     - name: Push Docker image

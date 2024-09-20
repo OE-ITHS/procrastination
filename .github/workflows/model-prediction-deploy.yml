@@ -11,13 +11,13 @@ on:
     # Only trigger workflow if the push or pull request contains commits with changes to anything in these directories/files
     paths:
       - '.github/workflows/model-prediction-deploy.yml'
-      - 'pipes/transformed-model-predictions/**'
+      - 'pipes/transformed_model_predictions/**'
   pull_request:
     branches:
       - 'main'
     paths:
       - '.github/workflows/model-prediction-deploy.yml'
-      - 'pipes/transformed-model-predicitons/**'
+      - 'pipes/transformed_model_predicitons/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -55,6 +55,6 @@ jobs:
           --region=us-central1 \
           --allow-unauthenticated \
           --runtime=python310 \
-          --source=./pipes/transformed-model-predictions/ \
+          --source=./pipes/transformed_model_predictions/ \
           --trigger-http \
           --memory=1024Mi
