@@ -1,5 +1,5 @@
 # Name that appears in github actions page
-name: Deploy Google Cloud Workflow
+name: Deploy Google Cloud Oxygen Workflow
 
 # Controls when the workflow will run
 on:
@@ -10,14 +10,14 @@ on:
       - 'main'
     # Only trigger workflow if the push or pull request contains commits with changes to anything in these directories/files
     paths:
-      - '.github/workflows/gcp-workflow-deploy.yml'
-      - 'pipelines/gcp-workflow.yml'
+      - '.github/workflows/gcp-workflow-oxygen-deploy.yml'
+      - 'pipelines/gcp-workflow-oxygen.yml'
   pull_request:
     branches:
       - 'main'
     paths:
-      - '.github/workflows/gcp-workflow-deploy.yml'
-      - 'pipelines/gcp-workflow.yml'
+      - '.github/workflows/gcp-workflow-oxygen-deploy.yml'
+      - 'pipelines/gcp-workflow-oxygen.yml'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -44,26 +44,26 @@ jobs:
       # Deploys Google Cloud Workflow to gcp
     - name: Deploy Google Cloud Workflow
       run: |
-        gcloud workflows deploy procrastination-workflow \
-          --source=./pipelines/gcp-workflow.yml \
+        gcloud workflows deploy procrastination-oxygen-workflow \
+          --source=./pipelines/gcp-workflow-oxygen.yml \
           --location=us-central1 \
 
       # Deletes previous Cloud Scheduler job. This is because cloud scheduler doesn't have a "deploy" command, thus conflicting when there already exists a job
     - name: Delete previous Cloud Scheduler job
       # Continues on error, such as there not going a job with the used name
       continue-on-error: true
-      run: gcloud scheduler jobs delete trigger-cloud-run-workflow --location=us-central1 --quiet
+      run: gcloud scheduler jobs delete trigger-cloud-oxygen-workflow --location=us-central1 --quiet
 
       # Creates Cloud Scheduler job on gcp. Sets cron to be hourly, http method to be POST
       # as well as the url to the workflow, type of body sent to workflow and what arguments the message body contains
     - name: Create Cloud Scheduler job
       run: |
-        gcloud scheduler jobs create http trigger-cloud-run-workflow \
+        gcloud scheduler jobs create http trigger-cloud-oxygen-workflow \
         --schedule="0 * * * *" \
         --http-method=POST \
         --location=us-central1 \
-        --uri=${{ secrets.GCP_WORKFLOW_URL }} \
+        --uri=${{ secrets.GCP_WORKFLOW_OXYGEN_URL }} \
         --oauth-service-account-email=${{ secrets.GCP_SERVICE_ACCOUNT }} \
         --headers Content-Type=application/json \
-        --message-body='{ "argument": "{\"cloud_run_url\": \"${{ secrets.CLOUD_RUN_URL }}\", \"cloud_functions_url\": \"${{ secrets.CLOUD_FUNCTIONS_URL }}\"}" }' \
+        --message-body='{ "argument": "{\"oxygen_func_url\": \"${{ secrets.OXYGEN_FUNC_URL }}\", \"oxygen_model_func_url\": \"${{ secrets.CLOUD_FUNCTIONS_URL }}\"}" }' \
         --time-zone="UTC"

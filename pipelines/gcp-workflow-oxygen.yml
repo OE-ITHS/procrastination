@@ -1,0 +1,48 @@
+# workflow.yml
+
+main:
+  # Recieve argument dictionary from Cloud Scheduler.
+  params: [input_data]
+
+  steps:
+  # Make a HTTP request to the Cloud Run service.
+  - invokeCloudFunction:
+      call: http.get
+      args:
+        url: ${input_data.oxygen_func_url}
+      result: oxygen_function_response
+
+  # Log the response of the HTTP request to Cloud Run.
+  - log_response_run:
+      call: sys.log
+      args:
+        data: ${oxygen_function_response}
+
+  # Log the url recieved from scheduler for debug purposes.
+  - log_run_url:
+      call: sys.log
+      args:
+        data: ${"Recieved oxygen_func_url is = " + input_data.oxygen_func_url}
+
+  # # Make a HTTP request to the Cloud Run service.
+  # - invokeCloudFunctionsService:
+  #     call: http.get
+  #     args:
+  #       url: ${input_data.cloud_functions_url}
+  #     result: cloud_functions_service_response
+
+  # # Log the response of the HTTP request to Cloud Functions.
+  # - log_response_functions:
+  #     call: sys.log
+  #     args:
+  #       data: ${cloud_functions_service_response}
+
+  # # Log the url recieved from scheduler for debug purposes.
+  # - log_functions_url:
+  #     call: sys.log
+  #     args:
+  #       data: ${"Recieved cloud_functions_url is = " + input_data.cloud_functions_url}
+
+  # # Return simple message that workflow finished.
+  # - returnResponse:
+  #     return: "Workflow successfully finished"
