@@ -57,5 +57,5 @@ jobs:
           --runtime=python310 \
           --source=./pipes/api_oxygen_raw/ \
           --trigger-http \
-          --port 8081 \
+          --port=8081 \
           --memory=1024Mi
