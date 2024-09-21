@@ -50,7 +50,7 @@ jobs:
       # Deploys the container image located in the Artifact Registry to Cloud Run with unauthenticated access permitted (so anyone with the url can access/trigger it)
     - name: Deploy to Google Cloud Run Functions
       run: |
-        gcloud functions deploy api_oxygen_raw1 \
+        gcloud functions deploy api_oxygen_bq \
           --gen2 \
           --region=us-central1 \
           --allow-unauthenticated \
