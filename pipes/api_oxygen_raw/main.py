@@ -22,5 +22,5 @@ def api_oxygen_bq(request):
     return jsonify({'message': 'Data stored successfully!'})
 
 if __name__ == '__main__':
-    # Run the application on port 8081.
-    app.run(host='0.0.0.0', port=8081)
+    # Run the application on port 8080.
+    app.run(host='0.0.0.0', port=8080)
