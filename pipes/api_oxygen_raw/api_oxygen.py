@@ -14,7 +14,10 @@ def fetch_oxygen_data() -> None | dict:
     # Fetch data from SMHI oxygen API.
     response = requests.get(api_url)
 
-    response_json = {key:response.json()[key] for key in ['updated', 'parameter', 'station', 'period', 'position', 'value']}
+    response_json = {key:response.json()[key] for key in ['updated', 'parameter', 'station', 'period', 'position']}
+
+    response_json['value_d1'] = next((item for item in response.json()['value'] if item['depth'] == '1'), None)
+    response_json['value_d5'] = next((item for item in response.json()['value'] if item['depth'] == '5'), None)
 
     # Check if the fetch returned status_code that indicates success.
     if response.status_code != 200:
