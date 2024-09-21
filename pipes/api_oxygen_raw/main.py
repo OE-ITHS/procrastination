@@ -6,7 +6,7 @@ from oxygen_bigquery import get_schema, generate_df_and_config, load_to_bigquery
 app = Flask(__name__)
 
 @app.route('/oxygen', methods=['GET'])
-def api_oxygen_bq():
+def api_oxygen_bq(request):
     oxygen_data = fetch_oxygen_data()
     
     # Provide descriptive error messages.
