@@ -1,0 +1,77 @@
+# Name that appears in github actions page
+name: Deploy api-oxygen-raw to Cloud Run
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events
+  push:
+    # Only trigger workflow if the push or pull request was on branch 'main'
+    branches:
+      - 'main'
+    # Only trigger workflow if the push or pull request contains commits with changes to anything in these directories/files
+    paths:
+      - '.github/workflows/api-oxygen-raw-deploy.yml'
+      - 'pipes/api_oxygen_raw/**'
+  pull_request:
+    branches:
+      - 'main'
+    paths:
+      - '.github/workflows/api-oxygen-raw-deploy.yml'
+      - 'pipes/api_oxygen_raw/**'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel | In this case we only have 1 job
+jobs:
+  # This workflow contains a single job called "deploy"
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Defines permissions the .yml will have
+    permissions:
+      # Permission to read contents of repository | In this case it's used to read the github secrets such as GCP_PROJECT_ID or GCP_SA_KEY
+      contents: read
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Clones repository code to github runner, so workflow can access the files
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+      # Authenticates to Google Cloud to recieve necessary permissions
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      # Sets up Docker Buildx which is a tool necessary for building Docker images
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+      # Configures Docker to send its images to the Artifact Registry
+    - name: Configure Docker to use Google Artifact Registry
+      run: |
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+        
+      # Builds Docker image from contents of pipes/api-oxygen-raw/ in the procrastionation-docker-repo/ registry repository and tags the image as the latest version
+    - name: Build Docker image
+      run: |
+        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/api-oxygen-raw-image:latest ./pipes/api_oxygen_raw/
+    
+      # Pushes the just built image to the Artifact Registry in the specified repository and tag
+    - name: Push Docker image
+      run: |
+        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/api-oxygen-raw-image:latest
+
+      # Deploys the container image located in the Artifact Registry to Cloud Run with unauthenticated access permitted (so anyone with the url can access/trigger it)
+    - name: Deploy to Google Cloud Run
+      run: |
+        gcloud run deploy oxygen-api-call-run-container \
+          --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/api-oxygen-raw-image:latest \
+          --region us-central1 \
+          --platform managed \
+          --allow-unauthenticated
+      #   --verbosity=debug  # Enable if you need extra info to fix issues
