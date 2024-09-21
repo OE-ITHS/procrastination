@@ -1,5 +1,5 @@
 # Name that appears in github actions page
-name: Deploy api-oxygen-raw to Cloud Run
+name: Deploy api-oxygen-raw to Cloud Run Functions
 
 # Controls when the workflow will run
 on:
@@ -45,33 +45,16 @@ jobs:
       uses: google-github-actions/auth@v2
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      # Sets up Docker Buildx which is a tool necessary for building Docker images
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-    
-      # Configures Docker to send its images to the Artifact Registry
-    - name: Configure Docker to use Google Artifact Registry
-      run: |
-        gcloud auth configure-docker us-central1-docker.pkg.dev
-        
-      # Builds Docker image from contents of pipes/api-oxygen-raw/ in the procrastionation-docker-repo/ registry repository and tags the image as the latest version
-    - name: Build Docker image
-      run: |
-        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/api-oxygen-raw-image:latest ./pipes/api_oxygen_raw/
-    
-      # Pushes the just built image to the Artifact Registry in the specified repository and tag
-    - name: Push Docker image
-      run: |
-        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/api-oxygen-raw-image:latest
+        credentials_json: ${{ secrets.GCP_SA_KEY }}    
 
       # Deploys the container image located in the Artifact Registry to Cloud Run with unauthenticated access permitted (so anyone with the url can access/trigger it)
-    - name: Deploy to Google Cloud Run
+    - name: Deploy to Google Cloud Run Functions
       run: |
-        gcloud run deploy oxygen-api-call-run-container \
-          --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/procrastination-docker-repo/api-oxygen-raw-image:latest \
-          --region us-central1 \
-          --platform managed \
-          --allow-unauthenticated
-      #   --verbosity=debug  # Enable if you need extra info to fix issues
+        gcloud functions deploy api_oxygen_raw \
+          --gen2 \
+          --region=us-central1 \
+          --allow-unauthenticated \
+          --runtime=python310 \
+          --source=./pipes/api_oxygen_raw/ \
+          --trigger-http \
+          --memory=1024Mi
