@@ -40,11 +40,25 @@
           width: 75vw;
         }
       }
+
+      #dburl {
+        position: relative;
+      }
+      #dburl a {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
     </style>
   </head>
 <body class="d-flex h-100 text-center text-white bg-dark">
     
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+
+  <div id="dburl">
+    <a href="{{ url_for('show_dashboard') }}">Dashboard</a>
+  </div>
+
   <header class="mb-auto">
     <div>
       <nav class="nav nav-masthead justify-content-center float-md-end">
@@ -55,7 +69,6 @@
   <main class="px-3">
     <h1>Team Procrastination</h1>
     <p class="lead">To fetch the most recent predictions, press the "Fetch predictions" button below.</p>
-    <a href="{{ url_for('show_dashboard') }}">Dashboard</a>
     {% if table_bool %}
     <p class="lead">Temperatures are in Celsius. Datetimes are in local (Europe/Stockholm) time.</p>
     {% endif %}

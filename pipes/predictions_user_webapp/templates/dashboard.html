@@ -11,11 +11,25 @@
     <title>Data Correlation</title>
 
     <!-- CSS code to change stylistic properties of the DataFrame table -->
-
+    <style>
+      #wpurl {
+        position: relative;
+      }
+      #wpurl a {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+    </style>
   </head>
 <body class="d-flex h-100 text-center text-white bg-dark">
     
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+
+  <div id="wpurl">
+    <a href="{{ url_for('web_page') }}">Predictions</a>
+  </div>
+
   <header class="mb-auto">
     <div>
       <nav class="nav nav-masthead justify-content-center float-md-end">
@@ -26,7 +40,6 @@
   <main class="px-3">
     <h1>Team Procrastination</h1>
     <p class="lead">Correlation between Oxygen Content in the oceans and Temperature in Stockholm.</p>
-    <a href="{{ url_for('web_page') }}">Predictions</a>
       <div style="overflow-x:auto;">
         <img src="data:image/png;base64, {{ plot_url }}" width="800" height="auto" alt="graph">
       </div>
