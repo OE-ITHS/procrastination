@@ -20,6 +20,7 @@ def generate_plot(joined_df):
     ax1.tick_params(colors='white', which='both')
     ax1.set_ylabel('Oxygen Content (ml/l)', color='b')
     ax1.tick_params(axis='y', colors='b')
+    ax1.tick_params(axis='x', rotation=45)
     ax1.grid()
 
     ax2.plot(X, Y2, 'o-r')
