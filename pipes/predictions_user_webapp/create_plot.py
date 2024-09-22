@@ -1,12 +1,13 @@
 import urllib.parse, io, base64
 import matplotlib.pyplot as plt
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 def generate_plot(joined_df):
     
     limited_df = joined_df.iloc[:50]
 
-    X = [datetime.fromtimestamp(dt) for dt in limited_df['dt']]
+    X = [datetime.fromtimestamp(dt, tz=timezone.utc).astimezone(ZoneInfo('Europe/Stockholm')).replace(tzinfo=None) for dt in limited_df['dt']]
 
     Y1 = [o for o in limited_df['oxygen_d1']]
     Y2 = [(t-273.15) for t in limited_df['temp']]
