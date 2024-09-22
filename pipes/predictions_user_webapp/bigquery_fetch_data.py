@@ -26,14 +26,14 @@ def fetch_clean_data() -> pd.DataFrame:
     weather_view = 'weather_clean'
 
     # Defines query that's going to be used on the bigquery view.
-    query = ('SELECT'
-             'w.dt,'
-             'w.temp,'
-             'o.oxygen_d1'
-            f'FROM `{project_id}.{oxygen_dataset}.{oxygen_view}` AS o'
-            f'INNER JOIN `{project_id}.{weather_dataset}.{weather_view}` AS w'
-             'ON ABS(DATE_DIFF(o.datetime_utc, w.datetime_utc, SECOND)) < 300'
-             'ORDER BY dt DESC')
+    query = (f'''SELECT
+                 w.dt,
+                 w.temp,
+                 o.oxygen_d1
+                 FROM `{project_id}.{oxygen_dataset}.{oxygen_view}` AS o
+                 INNER JOIN `{project_id}.{weather_dataset}.{weather_view}` AS w
+                 ON ABS(DATE_DIFF(o.datetime_utc, w.datetime_utc, SECOND)) < 300
+                 ORDER BY dt DESC''')
 
     try:
         # Uses query on bigquery "as a whole" (which is why project and dataset is specified above).
