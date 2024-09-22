@@ -20,7 +20,7 @@ def generate_plot(joined_df):
     ax1.tick_params(colors='white', which='both')
     ax1.set_ylabel('Oxygen Content (ml/l)', color='b')
     ax1.tick_params(axis='y', colors='b')
-    ax1.tick_params(axis='x', rotation=45)
+    ax1.tick_params(axis='x', rotation=30)
     ax1.grid()
 
     ax2.plot(X, Y2, 'o-r')
@@ -29,6 +29,7 @@ def generate_plot(joined_df):
     ax2.set_ylabel('Temperature (\N{DEGREE SIGN}C)', color='r')
     ax2.yaxis.set_label_position('right')
     ax2.tick_params(axis='y', colors='r')
+    ax2.set_xticklabels([])
 
     img = io.BytesIO()
     fig.savefig(img, format = 'png')
