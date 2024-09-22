@@ -1,5 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, jsonify
 from bigquery_predictions import fetch_bq_predictions
+from bigquery_fetch_data import fetch_clean_data
+from create_plot import generate_plot
 from formatter import format_data
 import pandas as pd
 
@@ -45,6 +47,14 @@ def clear_table():
     # Redirect to the base URL, which clears the table (since no 'show_table' param will be present)
     # Triggered by second button that appears when the table is displayed.
     return redirect(url_for('web_page'))
+
+@app.route('/dashboard', methods=['GET'])
+def show_dashboard():
+    joined_df = fetch_clean_data()
+
+    plot_data = generate_plot(joined_df)
+
+    return render_template('dashboard.html', plot_url=plot_data)
 
 if __name__ == '__main__':
     # Run the application on port 8080.
