@@ -52,6 +52,11 @@ def clear_table():
 def show_dashboard():
     joined_df = fetch_clean_data()
 
+    # Checks if returned df variable is a pandas DataFrame (or the 'not found' string)
+    if not isinstance(joined_df, pd.DataFrame):
+        # Return descriptive error message
+        return jsonify({'error': 'Failed to fetch joined clean data'}), 500
+
     plot_data = generate_plot(joined_df)
 
     return render_template('dashboard.html', plot_url=plot_data)
