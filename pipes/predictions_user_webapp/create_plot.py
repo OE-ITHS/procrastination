@@ -1,6 +1,5 @@
-import urllib.parse
+import urllib.parse, io, base64
 import matplotlib.pyplot as plt
-import io, urllib, base64
 
 def generate_plot(joined_df):
     
