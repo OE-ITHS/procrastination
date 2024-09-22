@@ -55,7 +55,7 @@
   <main class="px-3">
     <h1>Team Procrastination</h1>
     <p class="lead">To fetch the most recent predictions, press the "Fetch predictions" button below.</p>
-    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('show_dashboard') }}">Dashboard</a>
     {% if table_bool %}
     <p class="lead">Temperatures are in Celsius. Datetimes are in local (Europe/Stockholm) time.</p>
     {% endif %}
